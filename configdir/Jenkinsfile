@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    environment {
+        GIT_CREDENTIALS_ID = 'github-credentials'
+        BRANCH = 'requirements'
+        DIR_TO_PUSH = '/var/jenkins_home/workspace/Automation_Suite'
+    }
+    stages {
+        stage('Stage-1: Clear old files'){
+            steps {
+                deleteDir()
+            }
+        }
+        stage('Stage-2: Clone repository') {
+            steps {
+                bat '''
+                        rmdir /s /q repo
+                        git clone https://github.com/sagar-harry/Automation_Suite repo
+                    '''
+            }
+        }
+        
+    }
+}
