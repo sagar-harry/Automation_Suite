@@ -20,5 +20,23 @@ pipeline {
             }
         }
         
+        stage("Stage-3: Generate test scripts") {
+            steps {
+                script {
+                    def venv_path = "C:/Users/Administrator/Desktop/QE_COE/genai_venv/Scripts"
+                    def workspace_path = "C:/Users/Administrator/Desktop/QE_COE/automated_pipeline_2"
+
+                    bat """
+                        cd ${venv_path}
+                        call activate
+                        cd ${workspace_path}
+                        python generate_test_scripts.py
+                    """
+                    echo "Completed Stage-3"
+                }
+            }
+        }
+
+        
     }
 }
