@@ -16,6 +16,9 @@ pipeline {
                 bat '''
                         rmdir /s /q repo
                         git clone https://github.com/sagar-harry/Automation_Suite repo
+                        git clone https://github.com/sagar-harry/Automation_Suite destination_repo
+                        cd destination_repo
+                        git checkout -b generated_tests
                     '''
             }
         }
@@ -33,6 +36,41 @@ pipeline {
                         python generate_test_scripts.py
                     """
                     echo "Completed Stage-3"
+                }
+            }
+        }
+
+        stage("Stage-4: Move generated test scripts") {
+            steps {
+                script {
+                    def venv_path = "C:/Users/Administrator/Desktop/QE_COE/genai_venv/Scripts"
+                    def workspace_path = "C:/Users/Administrator/Desktop/QE_COE/automated_pipeline_2"
+
+                    bat """
+                        cd ${venv_path}
+                        call activate
+                        
+                        cd ${workspace_path}
+                        python move_test_scripts.py
+                    """
+                    echo "Completed Stage-4"
+                }
+            }
+        }
+
+         stage('Stage-5: Commit and Push') {
+            steps {
+                withCredentials([
+                    gitUsernamePassword(credentialsId: 'github-credentials', gitToolName: 'Default')
+                ]) {
+                    bat '''
+                    cd destination_repo
+                    git config --global user.email "10vidyasagarkonni@gmail.com"
+                    git config --global user.name "sagar-harry"
+                    git add .
+                    git commit -m "Push test scripts"
+                    git push origin generated_tests
+                    '''
                 }
             }
         }
