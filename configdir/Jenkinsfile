@@ -17,7 +17,7 @@ pipeline {
                         rmdir /s /q destination_repo
                         git clone https://github.com/sagar-harry/Automation_Suite destination_repo
                         cd destination_repo
-                        git checkout main
+                        git checkout generated_tests
                     '''
             }
         }
