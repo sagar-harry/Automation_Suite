@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<testsuites>
+    <testsuite name="sprint_1" tests="2" failures="0" errors="0" skipped="0">
+        <testcase classname="test_case_1.py" name="Validate Reset Functionality" time="45.053727">
+            <system-out>Success</system-out>
+        </testcase>
+        <testcase classname="test_case_2.py" name="Checkout Process Validation" time="45.008219">
+            <system-out>Success</system-out>
+        </testcase>
+    </testsuite>
+</testsuites>
