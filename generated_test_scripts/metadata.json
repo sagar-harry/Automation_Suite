@@ -4,7 +4,7 @@
             "csv_name": "sprint_1.csv",
             "script_name": "test_case_1.py",
             "test_case_index": "1",
-            "test_case_name": "Validate Reset Functionality"
+            "test_case_name": "Validate Reset  Functionality"
         },
         "test_case_2": {
             "csv_name": "sprint_1.csv",
