@@ -13,15 +13,23 @@ pipeline {
         }
         stage('Stage-2: Clone repository') {
             steps {
-                bat '''
+
+                withCredentials([
+                    gitUsernamePassword(credentialsId: 'github-credentials', gitToolName: 'Default')
+                ]) {
+                    bat '''
                         rmdir /s /q repo
                         git clone https://github.com/sagar-harry/Automation_Suite repo
+                        git push -d origin generated_tests
+                        git branch -d generated_tests
                         git clone https://github.com/sagar-harry/Automation_Suite destination_repo
                         cd destination_repo
                         git checkout main
                         git checkout -b generated_tests
                     '''
+                }
             }
+
         }
         
         stage("Stage-3: Generate test scripts") {
