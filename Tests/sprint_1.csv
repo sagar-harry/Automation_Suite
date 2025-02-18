@@ -1,5 +1,5 @@
 ﻿Test Case Name,Selectors,Workflow ,Additional Details
-Validate Reset  Functionality,"username: //*[@id=""user-name""]
+Validate Reset Functionality,"username: //*[@id=""user-name""]
 password: //*[@id=""password""]
 login button: //*[@id=""login-button""]
 bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
