@@ -23,8 +23,9 @@ pipeline {
                         cd repo
                         git push -d origin generated_tests
                         git branch -d generated_tests
+                        cd ..
                         git clone https://github.com/sagar-harry/Automation_Suite destination_repo
-                        cd destination_repo
+                        cd repo
                         git checkout main
                         git checkout -b generated_tests
                     '''
