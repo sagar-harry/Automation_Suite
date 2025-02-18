@@ -18,7 +18,7 @@ pipeline {
                         git clone https://github.com/sagar-harry/Automation_Suite repo
                         git clone https://github.com/sagar-harry/Automation_Suite destination_repo
                         cd destination_repo
-                        git checkout generated_tests
+                        git checkout -b generated_tests
                     '''
             }
         }
