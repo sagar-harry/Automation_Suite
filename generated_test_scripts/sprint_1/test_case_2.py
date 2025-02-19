@@ -2,67 +2,72 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 import time
 
-class LoginPage:
-    def __init__(self, driver):
-        self.driver = driver
+def test_checkout_payment_information():
+    # Setup options for headless mode, incognito, and disable notifications
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-notifications")
 
-    def login(self, username, password):
+    driver = webdriver.Chrome(options=chrome_options)
+    try:
+        # Open the website and maximize
+        driver.get("https://saucedemo.com/")
+        time.sleep(5)  # Wait for 5 seconds
+        driver.maximize_window()
+
+        # Log in
         time.sleep(3)
-        self.driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
+        driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys("standard_user")
         time.sleep(3)
-        self.driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
+        driver.find_element(By.XPATH, '//*[@id="password"]').send_keys("secret_sauce")
         time.sleep(3)
-        self.driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+        driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
 
-def test_payment_information_label_visible():
-    url = "https://saucedemo.com/"
-    username = "standard_user"
-    password = "secret_sauce"
+        # Add 'Bike Light' and 'Fleece Jacket' to the cart
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
 
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--disable-notifications')
-    options.add_argument('--incognito')
-    
-    driver = webdriver.Chrome(options=options)
-    driver.get(url)
-    time.sleep(5)
-    driver.maximize_window()
+        # Go to cart
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a').click()
 
-    login_page = LoginPage(driver)
-    login_page.login(username, password)
+        # Proceed to checkout
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="checkout"]').click()
 
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a').click()
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="checkout"]').click()
-    
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="first-name"]').send_keys('somename')
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="last-name"]').send_keys('lastname')
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="postal-code"]').send_keys('123456')
-    
-    time.sleep(3)
-    driver.find_element(By.XPATH, '//*[@id="continue"]').click()
-    
-    time.sleep(3)
-    payment_info_visible = driver.find_element(By.XPATH, '//*[@id="checkout_summary_container"]/div/div[2]/div[1]').is_displayed()
-    
-    driver.quit()
-    
-    if payment_info_visible:
-        exit(0)
-    else:
+        # Enter Checkout Information
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="first-name"]').send_keys("somename")
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="last-name"]').send_keys("lastname")
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="postal-code"]').send_keys("123456")
+
+        # Continue to Payment Information
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="continue"]').click()
+
+        # Assert that Payment Information is visible
+        time.sleep(3)
+        payment_info_visible = driver.find_element(By.XPATH, '//*[@id="checkout_summary_container"]/div/div[2]/div[1]').is_displayed()
+
+        if payment_info_visible:
+            print("Test case passed.")
+            exit(0)
+        else:
+            print("Test case failed.")
+            exit(1)
+
+    except Exception as e:
+        print("Test case failed due to exception:", e)
         exit(1)
 
-if __name__ == "__main__":
-    test_payment_information_label_visible()
+    finally:
+        driver.quit()
+
+test_checkout_payment_information()
