@@ -6,7 +6,7 @@ Submit button: //*[@id=""submit""]
 2. Enter the username: 'student'
 3. Enter the password: 'Password123'
 4. Click submit
-5. Verify successful login",
+5. Verify "Logged in Successfully" is visible",
 Negative Username Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
