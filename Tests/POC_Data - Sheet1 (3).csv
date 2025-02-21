@@ -11,10 +11,10 @@ Negative Username Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
 Error Mesage: //div[@id='error']","1. Open the page : https://practicetestautomation.com/practice-test-login/
-2. Enter the invalid username: 'incorrectUser'
+2. Enter the username: 'incorrectUser'
 3. Enter the password: 'Password123'
 4. Click submit
-5. Verify error message for invalid username",
+5. Verify error message 'your username is invalid!' inside the error message locator",
 Negative Password Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
