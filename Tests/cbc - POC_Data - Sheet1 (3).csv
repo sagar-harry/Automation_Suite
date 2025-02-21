@@ -2,19 +2,19 @@ Test Case Name,Selectors,Workflow,Additional Details
 Positive Login Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
-","1. Open the page : https://practicetestautomation.com/practice-test-login/
+message box: //*[@id=""loop-container""]/div/article/div[1]/h1","1. Open the page : https://practicetestautomation.com/practice-test-login/
 2. Enter the username: 'student'
 3. Enter the password: 'Password123'
 4. Click submit
-5. Verify login was successful or failure""",
+5. Verify 'Logged In Successfully' message is visible in message box""",
 Negative Username Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
-Error Mesage: //div[@id='error']","1. Open the page : https://practicetestautomation.com/practice-test-login/
+Error Mesage: //*[@id=""error""]","1. Open the page : https://practicetestautomation.com/practice-test-login/
 2. Enter the username: 'incorrectUser'
 3. Enter the password: 'Password123'
 4. Click submit
-5. Verify error message 'your username is invalid!' inside the error message locator",
+5. Verify error message 'your username is invalid!' inside the error div",
 Negative Password Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
