@@ -1,57 +1,63 @@
 
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 import sys
+import time
 
 def test_login():
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--incognito")
-    options.add_argument("--disable-notifications")
-    options.add_argument("--disable-popup-blocking")
-
-    driver = webdriver.Chrome(options=options)
+    # Options for running Chrome in headless mode, incognito, and without notifications
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-notifications")
     
     try:
+        # Setup WebDriver
+        driver = webdriver.Chrome(options=chrome_options)
+        
+        # Open the test page
         driver.get("https://practicetestautomation.com/practice-test-login/")
-        time.sleep(5)  # Wait for page to load
+        time.sleep(5)  # Wait for 5 secs after opening the page
         driver.maximize_window()
-
-        time.sleep(3)  # Wait before next action
-        username_field = WebDriverWait(driver, 10).until(
+        
+        # Locate and interact with the username field
+        WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//input[@name='username']"))
-        )
-        username_field.send_keys("student")
+        ).send_keys("student")
+        time.sleep(3)  # Wait for 3 secs before next action
         
-        time.sleep(3)  # Wait before next action
-        password_field = WebDriverWait(driver, 10).until(
+        # Locate and interact with the password field
+        WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//input[@name='password']"))
-        )
-        password_field.send_keys("Password123")
+        ).send_keys("Password123")
+        time.sleep(3)  # Wait for 3 secs before next action
         
-        time.sleep(3)  # Wait before next action
-        submit_button = WebDriverWait(driver, 10).until(
+        # Locate and click the submit button
+        WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//*[@id='submit']"))
-        )
-        submit_button.click()
+        ).click()
+        time.sleep(3)  # Wait for 3 secs before next action
         
-        time.sleep(3)  # Wait for result to be visible
+        # Verify if the login was successful
         success_message = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//*[contains(text(),'Logged in Successfully')]"))
+            EC.visibility_of_element_located((By.XPATH, "//h1[text()='Logged in Successfully']"))
         )
-
-        assert success_message.is_displayed()
-        sys.exit(0)
-
+        if success_message.is_displayed():
+            sys.exit(0)  # Test passed
+        else:
+            sys.exit(1)  # Test failed
+            
     except Exception as e:
-        print(e)
-        sys.exit(1)
-    
+        print(f"An error occurred: {e}")
+        sys.exit(1)  # Test failed
+
     finally:
+        # Close the driver
         driver.quit()
 
-test_login()
+# Run the test
+if __name__ == "__main__":
+    test_login()
