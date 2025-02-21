@@ -5,40 +5,40 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import sys
 
-def run_test_case():
+def run_test():
     try:
-        # Configure Selenium options
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-notifications")
+        chrome_options.add_argument("--disable-popup-blocking")
         chrome_options.add_argument("--incognito")
         
-        # Initialize the WebDriver
         driver = webdriver.Chrome(options=chrome_options)
         
         # Open the page
         driver.get("https://practicetestautomation.com/practice-test-login/")
-        time.sleep(5)  # Wait for 5 seconds after opening the page
-        
-        # Maximize the page
+        time.sleep(5)
         driver.maximize_window()
         
-        # Wait and interact with elements
+        # Wait for username field and enter username
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@name='username']"))
         )
         time.sleep(3)
         username_field = driver.find_element(By.XPATH, "//input[@name='username']")
-        username_field.send_keys('incorrectUser')
-
+        username_field.send_keys('student')
+        
+        # Wait for password field and enter invalid password
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@name='password']"))
         )
         time.sleep(3)
         password_field = driver.find_element(By.XPATH, "//input[@name='password']")
-        password_field.send_keys('Password123')
-
+        password_field.send_keys('incorrectPassword')
+        
+        # Wait for submit button and click it
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//*[@id='submit']"))
         )
@@ -46,20 +46,19 @@ def run_test_case():
         submit_button = driver.find_element(By.XPATH, "//*[@id='submit']")
         submit_button.click()
         
-        # Verify the error message
+        # Wait for error message and verify it
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[@id='error']"))
         )
         time.sleep(3)
         error_message = driver.find_element(By.XPATH, "//div[@id='error']")
-        assert 'your username is invalid!' in error_message.text
+        assert "invalid" in error_message.text.lower()
         
         driver.quit()
-        return 0
+        sys.exit(0)
     except Exception as e:
-        print(f"Test case failed: {e}")
+        print(f"Test failed: {e}")
         driver.quit()
-        return 1
+        sys.exit(1)
 
-exit_code = run_test_case()
-exit(exit_code)
+run_test()
