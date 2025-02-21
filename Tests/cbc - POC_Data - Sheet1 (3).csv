@@ -1,5 +1,5 @@
 Test Case Name,Selectors,Workflow,Additional Details
-Positive Login Test,"Username field: //input[@name='username']
+Positive  Login Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
 message box: //*[@id=""loop-container""]/div/article/div[1]/h1","1. Open the page : https://practicetestautomation.com/practice-test-login/
