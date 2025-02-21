@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<testsuites>
+    <testsuite name="cbc - poc_data - sheet1 (3)" tests="3" failures="3" errors="0" skipped="0">
+        <testcase classname="test_case_1.py" name="Positive Login Test" time="0.205866">
+            <failure message="Positive Login Test">Test case failed</failure>
+        </testcase>
+        <testcase classname="test_case_2.py" name="Negative Username Test" time="0.212468">
+            <failure message="Negative Username Test">Test case failed</failure>
+        </testcase>
+        <testcase classname="test_case_3.py" name="Negative Password Test" time="0.198399">
+            <failure message="Negative Password Test">Test case failed</failure>
+        </testcase>
+    </testsuite>
+</testsuites>
