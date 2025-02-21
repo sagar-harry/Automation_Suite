@@ -1,66 +1,68 @@
 
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import sys
 
-# Configure Selenium
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--incognito')
-options.add_argument('--disable-notifications')
-options.add_argument('--disable-popup-blocking')
+def test_invalid_login():
+    # Set up options for headless, incognito, and disabling pop-ups
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-notifications")
 
-# Initialize driver
-driver = webdriver.Chrome(options=options)
+    # Launch browser
+    driver = webdriver.Chrome(options=chrome_options)
 
-try:
-    # Open the page
-    driver.get('http://example.com')  # Replace with the actual URL
-    time.sleep(5)  # Wait for 5 seconds after opening the page
+    try:
+        # Open the page
+        driver.get("https://practicetestautomation.com/practice-test-login/")
+        time.sleep(5)  # Wait for 5 seconds
+        driver.maximize_window()
 
-    # Maximize the page
-    driver.maximize_window()
+        # Locate username field and input invalid username
+        username_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='username']"))
+        )
+        time.sleep(3)
+        username_field.send_keys("incorrectUser")
 
-    # Locate username field and enter invalid username
-    username_field = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@name='username']"))
-    )
-    time.sleep(3)  # Wait for 3 seconds before each action
-    username_field.send_keys('incorrectUser')
+        # Locate password field and input password
+        password_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='password']"))
+        )
+        time.sleep(3)
+        password_field.send_keys("Password123")
 
-    # Locate password field and enter password
-    password_field = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@name='password']"))
-    )
-    time.sleep(3)  # Wait for 3 seconds before each action
-    password_field.send_keys('Password123')
+        # Locate submit button and click
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='submit']"))
+        )
+        time.sleep(3)
+        submit_button.click()
 
-    # Locate and click submit button
-    submit_button = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//*[@id='submit']"))
-    )
-    time.sleep(3)  # Wait for 3 seconds before each action
-    submit_button.click()
+        # Verify error message for invalid username
+        error_message = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@id='error']"))
+        )
+        time.sleep(3)
 
-    # Verify error message for invalid username
-    error_message = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@id='error']"))
-    )
-    time.sleep(3)  # Wait for 3 seconds before each action
-    assert 'Invalid username' in error_message.text
+        if 'invalid username' in error_message.text.lower():
+            print("Test Passed: Correct error message displayed.")
+            driver.quit()
+            sys.exit(0)
+        else:
+            print("Test Failed: Incorrect error message displayed.")
+            driver.quit()
+            sys.exit(1)
 
-    # Test case passed
-    sys.exit(0)
+    except Exception as e:
+        print(f"Test Failed: {e}")
+        driver.quit()
+        sys.exit(1)
 
-except Exception as e:
-    # Test case failed
-    print(str(e))
-    sys.exit(1)
-
-finally:
-    # Close the driver
-    driver.quit()
+if __name__ == "__main__":
+    test_invalid_login()
