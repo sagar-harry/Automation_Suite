@@ -1,0 +1,29 @@
+Test Case Name,Selectors,Workflow,Additional Details
+Positive Login Test,"Username field: //input[@name='username']
+Password field: //input[@name='password']
+Submit button: //button[@type='submit']","1. Open the page : https://practicetestautomation.com/practice-test-login/
+2. Enter the username: 'student'
+3. Enter the password: 'Password123'
+4. Click submit
+5. Verify successful login
+6. Verify 'Log out' button is visible","Create a Page Object model framework structure using Testng
+Add Logger
+Add assertions in Step 6"
+Negative Username Test,"Username field: //input[@name='username']
+Password field: //input[@name='password']
+Submit button: //button[@type='submit']","1. Open the page
+2. Enter the invalid username: 'incorrectUser'
+3. Enter the password: 'Password123'
+4. Click submit
+5. Verify error message for invalid username","Create a Page Object model framework structure using Testng
+Add Logger
+Add assertions in Step 5"
+Negative Password Test,"Username field: //input[@name='username']
+Password field: //input[@name='password']
+Submit button: //button[@type='submit']","1. Open the page
+2. Enter the username: 'student'
+3. Enter the invalid password: 'incorrectPassword'
+4. Click submit
+5. Verify error message for invalid password","Create a Page Object model framework structure using Testng
+Add Logger
+Add assertions in Step 5"
