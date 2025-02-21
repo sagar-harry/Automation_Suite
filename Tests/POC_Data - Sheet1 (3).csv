@@ -10,7 +10,7 @@ Submit button: //*[@id=""submit""]
 Negative Username Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
-Error Mesage: //div[@id='error']","1. Open the page
+Error Mesage: //div[@id='error']","1. Open the page : https://practicetestautomation.com/practice-test-login/
 2. Enter the invalid username: 'incorrectUser'
 3. Enter the password: 'Password123'
 4. Click submit
@@ -18,7 +18,7 @@ Error Mesage: //div[@id='error']","1. Open the page
 Negative Password Test,"Username field: //input[@name='username']
 Password field: //input[@name='password']
 Submit button: //*[@id=""submit""]
-Error Mesage: //div[@id='error']","1. Open the page
+Error Mesage: //div[@id='error']","1. Open the page : https://practicetestautomation.com/practice-test-login/
 2. Enter the username: 'student'
 3. Enter the invalid password: 'incorrectPassword'
 4. Click submit
