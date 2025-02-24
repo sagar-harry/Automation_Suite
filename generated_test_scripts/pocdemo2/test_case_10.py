@@ -1,69 +1,72 @@
 
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import time
 import sys
 
-def test_ui_scenario():
+def run_test():
     # Set up Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-features=NetworkService")
-    chrome_options.add_argument("--window-size=1920x1080")
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--disable-notifications')
+    options.add_argument('--incognito')
+    options.add_argument('--disable-features=NetworkService')
 
-    # Start WebDriver
-    driver = webdriver.Chrome(options=chrome_options)
+    # Initialize WebDriver
+    driver = webdriver.Chrome(options=options)
 
     try:
-        # Navigate to the "Test Exceptions" page
-        driver.get("URL_OF_TEST_EXCEPTIONS_PAGE")
-        time.sleep(5)  # Wait 5 secs after opening the page
+        # Open the URL and wait
+        driver.get("https://practicetestautomation.com/practice-test-exceptions/")
+        driver.maximize_window()
+        time.sleep(5)
 
-        # Wait for 3 seconds before actions
+        # Add a new row
+        add_button = driver.find_element(By.XPATH, "//*[contains(text(),'Add')]")
         time.sleep(3)
-
-        # Add a row and enter "burger"
-        add_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "XPATH_TO_ADD_BUTTON"))
-        )
         add_button.click()
-        
-        time.sleep(3)  # Wait for 3 seconds each action
 
-        # Enter "burger"
-        input_box = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "XPATH_TO_INPUT_BOX"))
-        )
-        input_box.send_keys("burger")
+        # Verify "Row added successfully" message
+        confirmation_message = driver.find_element(By.ID, "confirmation").text
+        if confirmation_message != "Row added successfully":
+            sys.exit(1)
 
-        time.sleep(3)  # Wait for 3 seconds each action
+        # Enter "burger" into the new row
+        new_row_input = driver.find_element(By.XPATH, "//*[@id='row2']/input")
+        time.sleep(3)
+        new_row_input.send_keys("burger")
 
-        # Click on the "Remove" button
-        remove_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[@id='remove_btn']"))
-        )
+        # Save the new row
+        save_button = driver.find_element(By.XPATH, "//*[@id='save_btn']")
+        time.sleep(3)
+        save_button.click()
+
+        # Verify "Row added successfully" message after saving
+        confirmation_message = driver.find_element(By.ID, "confirmation").text
+        if confirmation_message != "Row added successfully":
+            sys.exit(1)
+
+        # Remove the newly added row
+        remove_button = driver.find_element(By.XPATH, "//*[@id='remove_btn']")
+        time.sleep(3)
         remove_button.click()
 
-        time.sleep(3)  # Wait for 3 seconds each action
+        # Verify "Row removed successfully" message
+        removal_message = driver.find_element(By.XPATH, "//div[contains(text(),'Row 2 was removed')]").text
+        if removal_message != "Row 2 was removed successfully":
+            sys.exit(1)
 
-        # Verify the message "Row removed successfully"
-        success_message = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Row 2 was removed')]"))
-        )
-
-        assert success_message is not None
-
-        driver.quit()
+        # Exit successfully
         sys.exit(0)
 
     except Exception as e:
-        driver.quit()
+        print(str(e))
         sys.exit(1)
 
-if __name__ == "__main__":
-    test_ui_scenario()
+    finally:
+        # Quit the driver
+        driver.quit()
+
+if __name__ == '__main__':
+    run_test()

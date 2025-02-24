@@ -1,56 +1,56 @@
 
+import time
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-def test_login_with_invalid_username():
+def test_invalid_login():
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-features=NetworkService")
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-notifications')
+    chrome_options.add_argument('--incognito')
+    chrome_options.add_argument('--disable-features=NetworkService')
 
     driver = webdriver.Chrome(options=chrome_options)
+    driver.maximize_window()
 
     try:
-        driver.get("https://practicetestautomation.com/practice-test-login/")
-        time.sleep(5)  # Wait for 5 secs after opening the page
-        driver.maximize_window()
+        driver.get('https://practicetestautomation.com/practice-test-login/')
+        time.sleep(5)
 
-        # Wait for elements and perform actions
+        username_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='username']"))
+        )
         time.sleep(3)
-        username_field = driver.find_element(By.XPATH, "//input[@name='username']")
-        
-        time.sleep(3)
-        password_field = driver.find_element(By.XPATH, "//input[@name='password']")
+        username_field.send_keys('incorrectUser')
 
+        password_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='password']"))
+        )
         time.sleep(3)
-        submit_button = driver.find_element(By.XPATH, "//*[@id='submit']")
+        password_field.send_keys('Password123')
 
-        username_field.send_keys("incorrectUser")
-        time.sleep(3)
-        password_field.send_keys("Password123")
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[@id='submit']"))
+        )
         time.sleep(3)
         submit_button.click()
 
-        # Wait for the error message to appear
-        time.sleep(3)
-        error_message = driver.find_element(By.XPATH, "//div[text()='Your username is invalid!']")
+        error_message = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[text()='Your username is invalid!']"))
+        )
 
-        # Check if error message is displayed
-        assert error_message.is_displayed(), "Error message is not displayed"
-
-        # Exit with success status
-        exit(0)
-
-    except NoSuchElementException as e:
-        print(f"Test Failed: {e}")
-        # Exit with failure status
-        exit(1)
-
+        if error_message.is_displayed():
+            sys.exit(0)
+        else:
+            sys.exit(1)
+    except Exception as e:
+        sys.exit(1)
     finally:
         driver.quit()
 
-test_login_with_invalid_username()
+if __name__ == '__main__':
+    test_invalid_login()

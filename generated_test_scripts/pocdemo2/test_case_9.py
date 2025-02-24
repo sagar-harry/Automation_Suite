@@ -2,57 +2,75 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
+import sys
 
-def test_add_row():
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--disable-notifications')
-    options.add_argument('--incognito')
-    options.add_argument('--disable-features=NetworkService')
-
-    driver = webdriver.Chrome(options=options)
-
+def test_ui_scenario():
     try:
-        driver.get("URL_OF_TEST_EXCEPTIONS_PAGE")  # Please replace with actual URL
+        # Configure ChromeOptions
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-notifications')
+        chrome_options.add_argument('--incognito')
+        chrome_options.add_argument('--disable-features=NetworkService')
+        
+        # Initialize WebDriver
+        driver = webdriver.Chrome(options=chrome_options)
+        
+        # Open the URL
+        driver.get("https://practicetestautomation.com/practice-test-exceptions/")
+        time.sleep(5)  # Wait for 5 secs after opening the page
+        
+        # Maximize the page
         driver.maximize_window()
-        time.sleep(5)  # Step 4: Wait for 5 secs after opening the page
-
-        # Step 1: Navigate to the "Test Exceptions" page
-        # Step 2: Click on the "Add" button to add a new row.
-        time.sleep(3)  # Step 6: Wait for 3 secs before every action
-        add_button = driver.find_element(By.XPATH, "//button[contains(text(),'Add')]")
+        time.sleep(3)  # Wait for 3 secs before taking any action
+        
+        # Locate and click the "Add" button
+        add_button = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//button[contains(text(),'Add')]"))
+        )
         add_button.click()
-
-        # Step 3: Verify the message "Row added successfully".
-        time.sleep(3)  # Wait for interaction to complete
-        confirmation_msg = driver.find_element(By.XPATH, "//*[@id='confirmation']").text
-        if confirmation_msg != "Row added successfully":
-            raise Exception("Confirmation message does not match expected message")
-
-        # Step 4: Enter "burger" into the newly added row input field.
-        time.sleep(3)  # Step 6: Wait for 3 secs before every action
-        input_field = driver.find_element(By.XPATH, "//*[@id='row2']/input")
+        time.sleep(3)  # Wait for 3 secs before taking the next action
+        
+        # Verify "Row added successfully" message
+        confirmation_message = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[@id='confirmation']"))
+        )
+        assert confirmation_message.text == "Row added successfully"
+        
+        # Enter "burger" into the input field of the new row
+        input_field = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[@id='row2']/input"))
+        )
         input_field.send_keys("burger")
-
-        # Step 5: Click on the "Save" button.
-        time.sleep(3)  # Step 6: Wait for 3 secs before every action
-        save_button = driver.find_element(By.XPATH, "//*[@id='save_btn']")
+        time.sleep(3)  # Wait for 3 secs before taking the next action
+        
+        # Locate and click the "Save" button
+        save_button = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[@id='save_btn']"))
+        )
         save_button.click()
-
-        # Step 6: Verify the message "Row added successfully".
-        time.sleep(3)  # Wait again for the message to appear
-        confirmation_msg = driver.find_element(By.XPATH, "//*[@id='confirmation']").text
-        if confirmation_msg != "Row added successfully":
-            raise Exception("Save confirmation message does not match expected message")
-
+        time.sleep(3)  # Wait for 3 secs before taking the next action
+        
+        # Verify "Row added successfully" message again
+        confirmation_message = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//*[@id='confirmation']"))
+        )
+        assert confirmation_message.text == "Row added successfully"
+        
+        # Close the driver
         driver.quit()
-        exit(0)  # Test passed
-
+        
+        # Exit with success
+        sys.exit(0)
+        
     except Exception as e:
-        print(f"Test failed: {str(e)}")
+        # If there is any error, print it and exit with failure
+        print(str(e))
         driver.quit()
-        exit(1)  # Test failed
+        sys.exit(1)
 
-# Run the test
-test_add_row()
+if __name__ == "__main__":
+    test_ui_scenario()
