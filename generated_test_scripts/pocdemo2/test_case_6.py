@@ -2,51 +2,45 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import sys
+import time
 
-def test_courses_page():
+def test_ui():
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--disable-notifications')
+    options.add_argument('--incognito')
+    options.add_argument('--disable-features=NetworkService')
+    
+    driver = webdriver.Chrome(options=options)
     try:
-        chrome_options = Options()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--disable-notifications')
-        chrome_options.add_argument('--disable-popup-blocking')
-        chrome_options.add_argument('--incognito')
-        chrome_options.add_argument('--disable-features=NetworkService')
-
-        driver = webdriver.Chrome(options=chrome_options)
-        
         driver.maximize_window()
-        time.sleep(3)  # Wait before navigating
-        
-        driver.get("https://practicetestautomation.com")
-        time.sleep(5)  # Wait for the page to load
+        driver.get("https://practicetestautomation.com/")
+        time.sleep(5)
 
-        # Click on the "Courses" menu
-        courses_menu = driver.find_element(By.XPATH, "//a[contains(text(),'Courses')]")
+        time.sleep(3)
+
+        courses_menu = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Courses')]"))
+        )
         courses_menu.click()
-        time.sleep(3)  # Wait after click
 
-        # Wait for the page to load
-        driver.implicitly_wait(10)
-        
-        # Verify the page URL
-        expected_url = "https://practicetestautomation.com/courses/"
-        current_url = driver.current_url
+        time.sleep(3)
 
-        if current_url == expected_url:
-            print("Test Passed")
+        WebDriverWait(driver, 10).until(
+            EC.url_to_be("https://practicetestautomation.com/courses/")
+        )
+
+        if driver.current_url == "https://practicetestautomation.com/courses/":
             sys.exit(0)
         else:
-            print("Test Failed")
             sys.exit(1)
-
     except Exception as e:
-        print(f"An exception occurred: {str(e)}")
+        print(f"An error occurred: {e}")
         sys.exit(1)
-
     finally:
         driver.quit()
 
-if __name__ == "__main__":
-    test_courses_page()
+test_ui()

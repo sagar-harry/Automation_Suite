@@ -4,69 +4,97 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import sys
 import time
 
 class LoginPage:
     def __init__(self, driver):
         self.driver = driver
-        
+
     def login(self, username, password):
-        self.driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
-        self.driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-        self.driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+        username_field = self.driver.find_element(By.XPATH, '//*[@id="user-name"]')
+        password_field = self.driver.find_element(By.XPATH, '//*[@id="password"]')
+        login_button = self.driver.find_element(By.XPATH, '//*[@id="login-button"]')
+        username_field.send_keys(username)
+        password_field.send_keys(password)
+        login_button.click()
+
 
 def main():
-    chrome_options = Options()
-    chrome_options.headless = True
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-features=NetworkService")
-    
-    driver = webdriver.Chrome(options=chrome_options)
+    options = Options()
+    options.headless = True
+    options.add_argument("--disable-notifications")
+    options.add_argument("--disable-popup-blocking")
+    options.add_argument("--incognito")
+    options.add_argument("--disable-features=NetworkService")
+
+    driver = webdriver.Chrome(options=options)
     driver.maximize_window()
+    driver.get('https://saucedemo.com/')
+    time.sleep(5)
+
+    login_page = LoginPage(driver)
+    login_page.login("standard_user", "secret_sauce")
+    time.sleep(3)
 
     try:
-        driver.get("https://saucedemo.com/")
-        time.sleep(5)
+        # Add 'Bike Light' to cart
+        bike_light = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))
+        )
+        bike_light.click()
+        time.sleep(3)
 
-        login_page = LoginPage(driver)
-        login_page.login("standard_user", "secret_sauce")
+        # Add 'Fleece Jacket' to cart
+        fleece_jacket = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))
+        )
+        fleece_jacket.click()
         time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))).click()
+
+        # Proceed to cart
+        cart_icon = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a'))
+        )
+        cart_icon.click()
         time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))).click()
+
+        # Proceed to checkout
+        checkout_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="checkout"]'))
+        )
+        checkout_button.click()
         time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a'))).click()
+
+        # Entering checkout details
+        first_name = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="first-name"]'))
+        )
+        last_name = driver.find_element(By.XPATH, '//*[@id="last-name"]')
+        zip_code = driver.find_element(By.XPATH, '//*[@id="postal-code"]')
+        first_name.send_keys("somename")
+        last_name.send_keys("lastname")
+        zip_code.send_keys("123456")
+
         time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="checkout"]'))).click()
+
+        # Continue to next step
+        continue_button = driver.find_element(By.XPATH, '//*[@id="continue"]')
+        continue_button.click()
         time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="first-name"]'))).send_keys("somename")
-        time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="last-name"]'))).send_keys("lastname")
-        time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="postal-code"]'))).send_keys("123456")
-        time.sleep(3)
-        
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="continue"]'))).click()
-        time.sleep(3)
-        
-        payment_section = WebDriverWait(driver, 10).until(
+
+        # Verify Payment Information
+        payment_info = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//*[@id="checkout_summary_container"]/div/div[2]/div[1]'))
         )
-        
-        assert payment_section.is_displayed()
-        exit(0)
-    except Exception as e:
-        exit(1)
-    finally:
+        assert 'Payment Information' in payment_info.text
+
         driver.quit()
+        sys.exit(0)
+
+    except Exception as e:
+        driver.quit()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

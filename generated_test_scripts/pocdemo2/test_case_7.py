@@ -1,56 +1,48 @@
 
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import time
+import sys
 
-def test_blog_page():
+def test_blog_navigation():
+    chrome_options = Options()
+    # Run in headless mode
+    chrome_options.add_argument("--headless")
+    # Disable notifications, pop-ups, and run in incognito mode
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-popup-blocking")
+    chrome_options.add_argument("--incognito")
+    # Disable NetworkService feature
+    chrome_options.add_argument("--disable-features=NetworkService")
+
+    driver = webdriver.Chrome(options=chrome_options)
     try:
-        # Set up Chrome options for headless mode, incognito, and other configurations
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--disable-notifications")
-        chrome_options.add_argument("--disable-popup-blocking")
-        chrome_options.add_argument("--incognito")
-        chrome_options.add_argument("--disable-features=NetworkService")
-
-        # Initialize the WebDriver
-        driver = webdriver.Chrome(options=chrome_options)
-
-        # Maximize the window
+        # Maximize page and set timeouts
         driver.maximize_window()
+        driver.implicitly_wait(5)
 
-        # Navigate to the homepage
-        driver.get("https://practicetestautomation.com")
+        # Navigate to homepage
+        driver.get("https://practicetestautomation.com/")
+        time.sleep(5)  # Wait for 5 seconds after opening the page
         
-        # Wait 5 seconds after page load
-        time.sleep(5)
-
-        # Wait for "Blog" menu element and click
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Blog')]"))
-        )
-        time.sleep(3)
+        # Click on the "Blog" menu
+        time.sleep(3)  # Wait for 3 seconds before action
         blog_menu = driver.find_element(By.XPATH, "//a[contains(text(),'Blog')]")
         blog_menu.click()
-
-        # Wait for page to load
-        time.sleep(3)
-        current_url = driver.current_url
-
-        # Verify the page URL
-        if current_url == "https://practicetestautomation.com/blog/":
-            driver.quit()
-            exit(0)
+        
+        # Wait for the page to load
+        time.sleep(5)  # Wait for 5 seconds after click
+        
+        # Verify the URL
+        time.sleep(3)  # Wait for 3 seconds before verification
+        if driver.current_url == "https://practicetestautomation.com/blog/":
+            sys.exit(0)  # Exit with code 0 if the test case passed
         else:
-            driver.quit()
-            exit(1)
-
+            sys.exit(1)  # Exit with code 1 if the test case failed
     except Exception as e:
+        sys.exit(1)
+    finally:
         driver.quit()
-        exit(1)
 
-if __name__ == "__main__":
-    test_blog_page()
+test_blog_navigation()

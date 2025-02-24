@@ -4,47 +4,48 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 import sys
+import time
 
-def test_practice_menu_navigation():
-    options = Options()
-    options.headless = True
-    options.add_argument("--incognito")
-    options.add_argument("--disable-notifications")
-    options.add_argument("--disable-popups")
-    options.add_argument("--disable-features=NetworkService")
-    
-    driver = webdriver.Chrome(options=options)
+# Configure Chrome options for headless mode, incognito, and disabling notifications
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--disable-features=NetworkService")
+chrome_options.add_experimental_option("prefs", {"profile.default_content_setting_values.notifications": 2})
+
+# Initialize WebDriver
+driver = webdriver.Chrome(options=chrome_options)
+
+try:
+    # Navigate to the homepage
+    driver.get("https://practicetestautomation.com/")
     driver.maximize_window()
 
-    try:
-        # Navigate to homepage
-        driver.get('https://practicetestautomation.com')
-        time.sleep(5)  # Wait for the page to load
+    # Wait 5 seconds after opening the page
+    time.sleep(5)
 
-        # Click on the "Practice" menu
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Practice')]"))
-        )
-        time.sleep(3)  # Additional wait before clicking
-        practice_menu = driver.find_element(By.XPATH, "//a[contains(text(),'Practice')]")
-        practice_menu.click()
-        time.sleep(3)  # Additional wait after clicking to ensure page load
+    # Click on the "Practice" menu
+    practice_menu = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Practice')]"))
+    )
+    time.sleep(3)
+    practice_menu.click()
 
-        # Verify that the page URL is as expected
-        WebDriverWait(driver, 10).until(
-            EC.url_to_be('https://practicetestautomation.com/practice/')
-        )
-        time.sleep(3)  # Additional wait before verification
+    # Wait for the page to load and verify the URL
+    time.sleep(3)
+    WebDriverWait(driver, 10).until(
+        EC.url_to_be("https://practicetestautomation.com/practice/")
+    )
 
-        assert driver.current_url == 'https://practicetestautomation.com/practice/'
-        driver.quit()
-        sys.exit(0)  # Exit with code 0 if test case passed
-    except Exception as e:
-        print(f"Test failed: {e}")
-        driver.quit()
-        sys.exit(1)  # Exit with code 1 if test case failed
+    # Test case passed
+    sys.exit(0)
 
-if __name__ == "__main__":
-    test_practice_menu_navigation()
+except Exception as e:
+    # Test case failed
+    print(f"Test case failed: {e}")
+    sys.exit(1)
+
+finally:
+    # Close the driver
+    driver.quit()

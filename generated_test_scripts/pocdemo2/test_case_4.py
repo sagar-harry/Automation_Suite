@@ -1,20 +1,21 @@
 
+import sys
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-import sys
 
 def run_test():
-    # Set Chrome options
+    # Setting up Chrome options for headless, incognito mode and disabling notifications
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--incognito")
     chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-popup-blocking")
     chrome_options.add_argument("--disable-features=NetworkService")
-    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--window-size=1920x1080")
 
     # Initialize WebDriver
     driver = webdriver.Chrome(options=chrome_options)
@@ -22,41 +23,31 @@ def run_test():
     try:
         # Navigate to the homepage
         driver.get("https://practicetestautomation.com/")
-        time.sleep(5)  # Wait for 5 secs after page opens
-
-        # Maximize the window
+        time.sleep(5)  # Wait for 5 seconds after opening the page
         driver.maximize_window()
-
-        # Wait for 3 secs before next action
-        time.sleep(3)
-
-        # Click on the "Home" menu
-        home_menu = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Home')]"))
-        )
+        
+        # Click the "Home" menu
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Home')]")))
+        time.sleep(3)  # Wait for 3 seconds before action
+        home_menu = driver.find_element(By.XPATH, "//a[contains(text(),'Home')]")
         home_menu.click()
 
-        # Wait for page to load
-        time.sleep(3)
+        # Wait for the page to load
+        WebDriverWait(driver, 10).until(EC.url_to_be("https://practicetestautomation.com/"))
+        time.sleep(3)  # Wait for 3 seconds before verifying
 
-        # Verify that the page URL is correct
-        expected_url = "https://practicetestautomation.com/"
-        WebDriverWait(driver, 10).until(EC.url_to_be(expected_url))
+        # Verify if the URL is correct
+        current_url = driver.current_url
+        if current_url == "https://practicetestautomation.com/":
+            sys.exit(0)  # Test passed
 
-        # Ensure URL is as expected
-        if driver.current_url == expected_url:
-            print("Test Passed!")
-            sys.exit(0)
-        else:
-            print("Test Failed: URL Mismatch")
-            sys.exit(1)
-        
     except Exception as e:
-        print(f"Test Failed: {str(e)}")
-        sys.exit(1)
-    
+        # If any exception occurs
+        print(f"Test failed due to {e}")
+        sys.exit(1)  # Test failed
+
     finally:
-        # Quit the driver
+        # Always close the driver
         driver.quit()
 
 if __name__ == "__main__":
