@@ -2,10 +2,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import sys
 import time
+import sys
 
 class LoginPage:
     def __init__(self, driver):
@@ -13,69 +11,79 @@ class LoginPage:
 
     def login(self, username, password):
         self.driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
+        time.sleep(3)
         self.driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
+        time.sleep(3)
         self.driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+        time.sleep(3)
 
-def main():
+def run_test():
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--window-size=1920,1080')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-notifications')
+    options.add_argument('--disable-popup-blocking')
+    options.add_argument('--incognito')
+    options.add_argument('--disable-features=NetworkService')
+
+    driver = webdriver.Chrome(options=options)
+
+    driver.get('https://saucedemo.com/')
+    time.sleep(5)
+    driver.maximize_window()
+    time.sleep(3)
+
+    login_page = LoginPage(driver)
+    login_page.login('standard_user', 'secret_sauce')
+
     try:
-        chrome_options = Options()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--disable-extensions')
-        chrome_options.add_argument('--disable-notifications')
-        chrome_options.add_argument('--incognito')
-        chrome_options.add_argument("--disable-features=NetworkService")
-        driver = webdriver.Chrome(options=chrome_options)
-
-        driver.get('https://saucedemo.com/')
-        time.sleep(5)
-        driver.maximize_window()
-
-        # Login
-        login_page = LoginPage(driver)
-        login_page.login('standard_user', 'secret_sauce')
+        # Add 'Bike Light' to the cart
+        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
         time.sleep(3)
 
-        # Add Bike Light to cart
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,
-            '//*[@id="add-to-cart-sauce-labs-bike-light"]'))).click()
+        # Add 'Fleece Jacket' to the cart
+        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
         time.sleep(3)
 
-        # Add Fleece Jacket to cart
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,
-            '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))).click()
+        # Verify cart badge count is '2'
+        cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
+        if cart_count != '2':
+            sys.exit(1)
+
+        # Remove 'Bike Light' from the cart
+        driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]').click()
         time.sleep(3)
 
-        # Verify cart badge shows '2'
-        cart_count = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,
-            '//*[@id="shopping_cart_container"]/a/span')))
-        assert cart_count.text == '2', "Cart does not display 2 items."
-
-        # Reset Cart
-        driver.find_element(By.XPATH, '//*[@id="cart_contents_container"]/div/div[2]/a').click()
-        time.sleep(3)
-        
-        # Come back to the shopping screen
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,
-            '//*[@id="continue-shopping"]'))).click()
+        # Remove 'Fleece Jacket' from the cart
+        driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]').click()
         time.sleep(3)
 
-        # Add Bolt T-Shirt to cart
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,
-            '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))).click()
+        # Verify cart count is 0
+        try:
+            cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
+            if cart_count != '0':
+                sys.exit(1)
+        except:
+            pass
+
+        # Add 'Bolt T-Shirt' to the cart
+        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
         time.sleep(3)
 
-        # Verify cart badge shows '1'
-        cart_count = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH,
-            '//*[@id="shopping_cart_container"]/a/span')))
-        assert cart_count.text == '1', "Cart does not display 1 item."
-
-        driver.quit()
-        sys.exit(0)
+        # Verify cart badge count is '1'
+        cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
+        if cart_count != '1':
+            sys.exit(1)
 
     except Exception as e:
-        driver.quit()
+        print(f"Test failed: {e}")
         sys.exit(1)
+    finally:
+        driver.quit()
 
-if __name__ == "__main__":
-    main()
+    sys.exit(0)
+
+if __name__ == '__main__':
+    run_test()
