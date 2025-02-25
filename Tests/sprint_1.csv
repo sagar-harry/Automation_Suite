@@ -5,8 +5,8 @@ login button: //*[@id=""login-button""]
 bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
 fleece jacket: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
 Cart count: //*[@id=""shopping_cart_container""]/a/span
-Remove Bike light: //*[@id="remove-sauce-labs-bike-light"]
-Remove fleece jacket: //*[@id="remove-sauce-labs-fleece-jacket"]","Given the user is logged in
+Remove Bike light: //*[@id=""remove-sauce-labs-bike-light""]
+Remove fleece jacket: //*[@id=""remove-sauce-labs-fleece-jacket""]","Given the user is logged in
 When they add 'Bike Light' and 'Fleece Jacket' to the cart
 Then the cart badge should display '2'
 Remove both the added products
