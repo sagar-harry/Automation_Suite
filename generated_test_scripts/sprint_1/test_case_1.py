@@ -2,95 +2,84 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import sys
 import time
+import sys
 
-# Initialize Chrome options
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-notifications')
-options.add_argument('--incognito')
-options.add_argument('--disable-features=NetworkService')
+def main():
+    options = Options()
+    options.headless = True
+    options.add_argument("--disable-notifications")
+    options.add_argument("--incognito")
+    options.add_argument("--disable-features=NetworkService")
 
-# Initialize driver
-driver = webdriver.Chrome(options=options)
-
-# Maximize window
-driver.maximize_window()
-
-# Define the wait time
-wait_time = 5
-
-try:
-    # Open the website
-    driver.get("https://saucedemo.com/")
-    time.sleep(wait_time)
-
-    # Locate and interact with login elements
-    username_input = WebDriverWait(driver, wait_time).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="user-name"]'))
-    )
-    password_input = driver.find_element(By.XPATH, '//*[@id="password"]')
-    login_button = driver.find_element(By.XPATH, '//*[@id="login-button"]')
-
-    # Login
-    username_input.send_keys("standard_user")
-    time.sleep(wait_time / 2)
-    password_input.send_keys("secret_sauce")
-    time.sleep(wait_time / 2)
-    login_button.click()
-    time.sleep(wait_time)
-
-    # Add 'Bike Light' and 'Fleece Jacket' to the cart
-    bike_light = WebDriverWait(driver, wait_time).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))
-    )
-    fleece_jacket = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]')
-
-    bike_light.click()
-    time.sleep(wait_time)
-    fleece_jacket.click()
-    time.sleep(wait_time)
-
-    # Verify cart badge displays '2'
-    cart_count = WebDriverWait(driver, wait_time).until(
-        EC.text_to_be_present_in_element((By.XPATH, '//*[@id="shopping_cart_container"]/a/span'), '2')
-    )
-
-    # Remove 'Bike Light' and 'Fleece Jacket'
-    remove_bike_light = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]')
-    remove_fleece_jacket = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')
-
-    remove_bike_light.click()
-    time.sleep(wait_time)
-    remove_fleece_jacket.click()
-    time.sleep(wait_time)
-
-    # Verify cart count element does not exist
     try:
-        driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://saucedemo.com/")
+        
+        time.sleep(5)
+        driver.maximize_window()
+
+        # Perform login
+        login_page = LoginPage(driver)
+        login_page.login("standard_user", "secret_sauce")
+
+        # Add items to the cart
+        time.sleep(3)
+        bike_light = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')
+        bike_light.click()
+
+        time.sleep(3)
+        fleece_jacket = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]')
+        fleece_jacket.click()
+
+        time.sleep(3)
+        cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        assert cart_count.text == '2', "Cart count should be 2"
+
+        # Remove items
+        time.sleep(3)
+        remove_bike_light = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]')
+        remove_bike_light.click()
+
+        time.sleep(3)
+        remove_fleece_jacket = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')
+        remove_fleece_jacket.click()
+
+        time.sleep(3)
+        cart_count_not_exist = driver.find_elements(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        assert len(cart_count_not_exist) == 0, "Cart count element should not exist"
+
+        # Add another item
+        time.sleep(3)
+        add_bolt_tshirt = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')
+        add_bolt_tshirt.click()
+
+        time.sleep(3)
+        cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        assert cart_count.text == '1', "Cart count should be 1"
+
+        driver.quit()
+        sys.exit(0)
+    except Exception as e:
+        print(e)
         sys.exit(1)
-    except:
-        pass
 
-    # Add 'Bolt T-Shirt' to the cart
-    add_bolt_tshirt = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')
-    add_bolt_tshirt.click()
-    time.sleep(wait_time)
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
 
-    # Verify cart badge displays '1'
-    cart_count = WebDriverWait(driver, wait_time).until(
-        EC.text_to_be_present_in_element((By.XPATH, '//*[@id="shopping_cart_container"]/a/span'), '1')
-    )
+    def login(self, username, password):
+        time.sleep(3)
+        username_input = self.driver.find_element(By.XPATH, '//*[@id="user-name"]')
+        username_input.send_keys(username)
 
-    # Test case passed
-    sys.exit(0)
+        time.sleep(3)
+        password_input = self.driver.find_element(By.XPATH, '//*[@id="password"]')
+        password_input.send_keys(password)
 
-except Exception as e:
-    print(f"Test case failed due to an exception: {e}")
-    sys.exit(1)
+        time.sleep(3)
+        login_button = self.driver.find_element(By.XPATH, '//*[@id="login-button"]')
+        login_button.click()
 
-finally:
-    driver.quit()
+if __name__ == "__main__":
+    main()
