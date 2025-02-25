@@ -1,67 +1,121 @@
 
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 import sys
 
-def setup_driver():
+try:
+    # Set Chrome options
     options = Options()
-    options.add_argument("--headless")
+    options.headless = True
     options.add_argument("--disable-notifications")
-    options.add_argument("--incognito")
     options.add_argument("--disable-popup-blocking")
+    options.add_argument("--incognito")
     options.add_argument("--disable-features=NetworkService")
+
+    # Initialize webdriver
     driver = webdriver.Chrome(options=options)
-    driver.maximize_window()
-    return driver
 
-def wait_and_find_element(driver, by, value):
-    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((by, value)))
-    time.sleep(3)
-    return driver.find_element(by, value)
+    driver.implicitly_wait(10)
 
-def login(driver, username, password):
+    # Open website
     driver.get("https://saucedemo.com/")
+    
+    # Maximize window
+    driver.maximize_window()
+    
+    # Wait for page to load
     time.sleep(5)
 
-    wait_and_find_element(driver, By.XPATH, '//*[@id="user-name"]').send_keys(username)
-    wait_and_find_element(driver, By.XPATH, '//*[@id="password"]').send_keys(password)
-    wait_and_find_element(driver, By.XPATH, '//*[@id="login-button"]').click()
+    # Wait before action
+    time.sleep(3)
 
-def logout(driver):
-    wait_and_find_element(driver, By.XPATH, '//*[@id="react-burger-menu-btn"]').click()
-    wait_and_find_element(driver, By.XPATH, '//*[@id="logout_sidebar_link"]').click()
+    # Login
+    driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys('standard_user')
+    driver.find_element(By.XPATH, '//*[@id="password"]').send_keys('secret_sauce')
+    driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+    
+    # Wait before action
+    time.sleep(3)
 
-def add_to_cart(driver):
-    wait_and_find_element(driver, By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
-    wait_and_find_element(driver, By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
+    # Add Bike Light to cart
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))
+    ).click()
 
-def checkout(driver):
-    wait_and_find_element(driver, By.XPATH, '//*[@id="shopping_cart_container"]/a').click()
-    wait_and_find_element(driver, By.XPATH, '//*[@id="checkout"]').click()
-    wait_and_find_element(driver, By.XPATH, '//*[@id="first-name"]').send_keys('somename')
-    wait_and_find_element(driver, By.XPATH, '//*[@id="last-name"]').send_keys('lastname')
-    wait_and_find_element(driver, By.XPATH, '//*[@id="postal-code"]').send_keys('123456')
-    wait_and_find_element(driver, By.XPATH, '//*[@id="continue"]').click()
-    wait_and_find_element(driver, By.XPATH, '//*[@id="finish"]').click()
-    wait_and_find_element(driver, By.XPATH, '//*[@id="back-to-products"]')
+    # Wait before action
+    time.sleep(3)
 
-def test_purchase_flow():
-    driver = setup_driver()
-    try:
-        login(driver, 'standard_user', 'secret_sauce')
-        add_to_cart(driver)
-        checkout(driver)
-        logout(driver)
-        driver.quit()
-        sys.exit(0)
-    except Exception as e:
-        print(f"Test failed: {e}")
-        driver.quit()
-        sys.exit(1)
+    # Add Fleece Jacket to cart
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))
+    ).click()
+    
+    # Wait before action
+    time.sleep(3)
 
-if __name__ == "__main__":
-    test_purchase_flow()
+    # Click on cart icon
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="shopping_cart_container"]/a'))
+    ).click()
+    
+    # Wait before action
+    time.sleep(3)
+
+    # Proceed to checkout
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="checkout"]'))
+    ).click()
+    
+    # Wait before action
+    time.sleep(3)
+
+    # Enter checkout information
+    driver.find_element(By.XPATH, '//*[@id="first-name"]').send_keys('somename')
+    driver.find_element(By.XPATH, '//*[@id="last-name"]').send_keys('lastname')
+    driver.find_element(By.XPATH, '//*[@id="postal-code"]').send_keys('123456')
+    
+    # Wait before action
+    time.sleep(3)
+
+    # Continue with checkout
+    driver.find_element(By.XPATH, '//*[@id="continue"]').click()
+    
+    # Wait before action
+    time.sleep(3)
+
+    # Finish purchase
+    driver.find_element(By.XPATH, '//*[@id="finish"]').click()
+    
+    # Wait before action
+    time.sleep(3)
+
+    # Return to homepage
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="back-to-products"]'))
+    ).click()
+    
+    # Wait before action
+    time.sleep(3)
+
+    # Logout process
+    driver.find_element(By.XPATH, '//*[@id="react-burger-menu-btn"]').click()
+    
+    # Wait before action
+    time.sleep(3)
+
+    driver.find_element(By.XPATH, '//*[@id="logout_sidebar_link"]').click()
+    
+    # Test case success
+    sys.exit(0)
+
+except Exception as e:
+    print(f"Test failed: {e}")
+    sys.exit(1)
+
+finally:
+    # Close the driver
+    driver.quit()
