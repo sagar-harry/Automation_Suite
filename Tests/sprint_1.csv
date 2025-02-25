@@ -4,8 +4,8 @@ password: //*[@id=""password""]
 login button: //*[@id=""login-button""]
 bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
 fleece jacket: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
-Cart count: //*[@id=""shopping_cart_container""]/a/span","Given the user is logged in
-Back to shopping screen: //*[@id="continue-shopping"]
+Cart count: //*[@id=""shopping_cart_container""]/a/span
+Back to shopping screen: //*[@id="continue-shopping"]","Given the user is logged in
 When they add 'Bike Light' and 'Fleece Jacket' to the cart
 Then the cart badge should display '2'
 When they reset the cart (remove the added products)
