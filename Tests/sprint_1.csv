@@ -3,13 +3,15 @@ Validate Reset Functionality,"username: //*[@id=""user-name""]
 password: //*[@id=""password""]
 login button: //*[@id=""login-button""]
 bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
-fleece jacket: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
+fleece jacket: //*[@id=""add-to-cart-sauce-labs-fleece-jacket""]
 Cart count: //*[@id=""shopping_cart_container""]/a/span
 Remove Bike light: //*[@id=""remove-sauce-labs-bike-light""]
-Remove fleece jacket: //*[@id=""remove-sauce-labs-fleece-jacket""]","Given the user is logged in
+Remove fleece jacket: //*[@id=""remove-sauce-labs-fleece-jacket""]
+Add Bolt T-Shirt: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]","Given the user is logged in
 When they add 'Bike Light' and 'Fleece Jacket' to the cart
 Then the cart badge should display '2'
-Remove both the added products
+Remove bike light
+Remove fleece jacket
 Then the cart count should be 0
 Then add 'Bolt T-Shirt' to the cart
 Then the cart badge should display '1'","Verifies reset functionality
