@@ -5,85 +5,69 @@ from selenium.webdriver.chrome.options import Options
 import time
 import sys
 
-class LoginPage:
-    def __init__(self, driver):
-        self.driver = driver
+def login(driver, username, password):
+    driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
+    driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
+    driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
 
-    def login(self, username, password):
-        self.driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
-        time.sleep(3)
-        self.driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-        time.sleep(3)
-        self.driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
-        time.sleep(3)
-
-def run_test():
+def main():
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument('--window-size=1920,1080')
-    options.add_argument('--no-sandbox')
     options.add_argument('--disable-notifications')
-    options.add_argument('--disable-popup-blocking')
     options.add_argument('--incognito')
     options.add_argument('--disable-features=NetworkService')
-
-    driver = webdriver.Chrome(options=options)
-
-    driver.get('https://saucedemo.com/')
-    time.sleep(5)
-    driver.maximize_window()
-    time.sleep(3)
-
-    login_page = LoginPage(driver)
-    login_page.login('standard_user', 'secret_sauce')
+    options.add_argument('--window-size=1920,1080')
 
     try:
-        # Add 'Bike Light' to the cart
-        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://saucedemo.com/")
+        time.sleep(5)
+        driver.maximize_window()
         time.sleep(3)
 
-        # Add 'Fleece Jacket' to the cart
-        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
+        login(driver, "standard_user", "secret_sauce")
+        
+        time.sleep(3)        
+        bike_light_button = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')
+        fleece_jacket_button = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]')
+        
+        bike_light_button.click()
         time.sleep(3)
-
-        # Verify cart badge count is '2'
-        cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
-        if cart_count != '2':
+        fleece_jacket_button.click()
+        time.sleep(3)
+        
+        cart_badge = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
+        if cart_badge != '2':
             sys.exit(1)
-
-        # Remove 'Bike Light' from the cart
-        driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]').click()
+            
+        remove_bike_light = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]')
+        remove_fleece_jacket = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')
+        
+        remove_bike_light.click()
         time.sleep(3)
-
-        # Remove 'Fleece Jacket' from the cart
-        driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]').click()
+        remove_fleece_jacket.click()
         time.sleep(3)
-
-        # Verify cart count is 0
-        try:
-            cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
-            if cart_count != '0':
-                sys.exit(1)
-        except:
-            pass
-
-        # Add 'Bolt T-Shirt' to the cart
-        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
-        time.sleep(3)
-
-        # Verify cart badge count is '1'
-        cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
-        if cart_count != '1':
+        
+        cart_badge = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
+        if cart_badge != '':
             sys.exit(1)
+        
+        add_bolt_tshirt = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')
+        
+        add_bolt_tshirt.click()
+        time.sleep(3)
 
+        cart_badge = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
+        if cart_badge != '1':
+            sys.exit(1)
+        
+        sys.exit(0)
     except Exception as e:
-        print(f"Test failed: {e}")
+        print("Test failed:", e)
         sys.exit(1)
     finally:
         driver.quit()
 
-    sys.exit(0)
-
-if __name__ == '__main__':
-    run_test()
+if __name__ == "__main__":
+    main()
