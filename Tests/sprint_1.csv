@@ -5,11 +5,13 @@ login button: //*[@id=""login-button""]
 bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
 fleece jacket: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
 Cart count: //*[@id=""shopping_cart_container""]/a/span","Given the user is logged in
+Back to shopping screen: //*[@id="continue-shopping"]
 When they add 'Bike Light' and 'Fleece Jacket' to the cart
 Then the cart badge should display '2'
 When they reset the cart (remove the added products)
 Then the cart should be empty
-When they add 'Bolt T-Shirt' to the cart after reset
+Then come back to the shopping screen
+Then add 'Bolt T-Shirt' to the cart after reset
 Then the cart badge should display '1'","Verifies reset functionality
 Use login method in LoginPage class to login to the ui   
 Website url: https://saucedemo.com/
