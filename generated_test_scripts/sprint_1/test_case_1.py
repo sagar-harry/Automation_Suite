@@ -1,85 +1,86 @@
 
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import sys
+import time
 
-# Initialize Chrome options
-options = Options()
-options.add_argument("--headless")
-options.add_argument("--disable-notifications")
+# Initialize the Chrome WebDriver
+options = webdriver.ChromeOptions()
 options.add_argument("--incognito")
+options.add_argument("--disable-notifications")
 options.add_argument("--disable-features=NetworkService")
 
-# Initialize Chrome Driver
-driver = webdriver.Chrome(options=options)
+# Test constants
+URL = "https://saucedemo.com/"
+USERNAME = "standard_user"
+PASSWORD = "secret_sauce"
 
 try:
-    # Open website
-    driver.get("https://saucedemo.com/")
-    time.sleep(5)
-
-    # Maximize window
+    # Start the browser
+    driver = webdriver.Chrome(options=options)
     driver.maximize_window()
+    driver.get(URL)
+    time.sleep(5)  # Wait for page to load
 
-    # Wait for 3 seconds before any actions (To adhere to the test requirements)
-    time.sleep(3)
+    # Login
+    class LoginPage:
+        @staticmethod
+        def login(driver, username, password):
+            wait = WebDriverWait(driver, 10)
+            wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="user-name"]'))).send_keys(username)
+            wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))).send_keys(password)
+            wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="login-button"]'))).click()
+            time.sleep(3)
 
     # Perform login
-    class LoginPage:
-        def login(self, username, password):
-            driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
-            time.sleep(3)
-            driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-            time.sleep(3)
-            driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
-            time.sleep(3)
-    
-    login_page = LoginPage()
-    login_page.login("standard_user", "secret_sauce")
+    LoginPage.login(driver, USERNAME, PASSWORD)
 
-    # Add 'Bike Light' to the cart
-    driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]').click()
+    # Add Bike Light to cart
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))).click()
     time.sleep(3)
 
-    # Add 'Fleece Jacket' to the cart
-    driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]').click()
+    # Add Fleece Jacket to cart
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]'))).click()
     time.sleep(3)
 
-    # Check the cart badge for '2'
-    cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
-    if cart_count != "2":
-        raise Exception("Cart count is not '2' after adding items")
+    # Verify cart badge displays 2
+    cart_count = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
+    assert cart_count.text == '2', "Cart badge did not show 2"
 
-    # Remove 'Bike Light' from cart
-    driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]').click()
+    # Remove Bike Light
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]'))).click()
     time.sleep(3)
 
-    # Remove 'Fleece Jacket' from cart
-    driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]').click()
+    # Remove Fleece Jacket
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]'))).click()
     time.sleep(3)
 
-    # Check that the cart badge is not present
-    try:
-        driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
-        raise Exception("Cart count element should not exist after removing all items")
-    except:
-        pass
+    # Verify cart count element doesn't exist
+    cart_badge_element = driver.find_elements(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+    assert len(cart_badge_element) == 0, "Cart count element should not exist"
 
-    # Add 'Bolt T-Shirt' to the cart
-    driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
+    # Add Bolt T-Shirt to cart
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))).click()
     time.sleep(3)
 
-    # Check the cart badge for '1'
-    cart_count = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span').text
-    if cart_count != "1":
-        raise Exception("Cart count is not '1' after adding 'Bolt T-Shirt'")
+    # Verify cart badge displays 1
+    cart_count = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
+    assert cart_count.text == '1', "Cart badge did not show 1"
+
+    sys.exit(0)  # Exit with success
 
 except Exception as e:
     print(f"Test failed: {e}")
-    sys.exit(1)
+    sys.exit(1)  # Exit with failure
+
 finally:
     driver.quit()
-
-sys.exit(0)
