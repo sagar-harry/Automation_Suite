@@ -5,7 +5,7 @@
             "script_name": "test_case_1.py",
             "test_case_index": "1",
             "test_case_name": "Validate Reset Functionality",
-            "execution_time": "60.334122",
+            "execution_time": "95.267269",
             "status": "Success"
         },
         "test_case_2": {
@@ -13,7 +13,7 @@
             "script_name": "test_case_2.py",
             "test_case_index": "2",
             "test_case_name": "Checkout Process Validation",
-            "execution_time": "72.312637",
+            "execution_time": "80.777226",
             "status": "Success"
         },
         "summary": {
@@ -27,7 +27,7 @@
             "script_name": "test_case_1.py",
             "test_case_index": "1",
             "test_case_name": "E2E Checkout Flow",
-            "execution_time": "91.01911",
+            "execution_time": "75.133691",
             "status": "Success"
         },
         "test_case_2": {
@@ -35,7 +35,7 @@
             "script_name": "test_case_2.py",
             "test_case_index": "2",
             "test_case_name": "Add Items to Cart",
-            "execution_time": "56.682948",
+            "execution_time": "53.919666",
             "status": "Success"
         },
         "summary": {
