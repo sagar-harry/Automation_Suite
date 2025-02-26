@@ -33,7 +33,7 @@ continue: //*[@id=""continue""]
 Payment information card: //*[@id=""checkout_summary_container""]/div/div[2]/div[1]","Given the user is logged in
 When they add 'Bike Light' and 'Fleece Jacket' to the cart
 And they proceed to checkout
-And they enter 'somename' as First Name, 'lastname' as Last Name, and '123456' as Zip Code
+And they  enter 'somename' as First Name, 'lastname' as Last Name, and '123456' as Zip Code
 And they click 'Continue'
 Then the 'Payment Information' label should be visible","Verifies that payment information section is displayed after entering checkout details
 Use login method in LoginPage class to login to the ui   
