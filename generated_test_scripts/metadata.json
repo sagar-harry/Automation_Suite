@@ -1,29 +1,27 @@
 {
-    "sprint_1": {
+    "test_combined": {
         "test_case_1": {
-            "csv_name": "sprint_1.csv",
+            "csv_name": "test_combined.csv",
             "script_name": "test_case_1.py",
             "test_case_index": "1",
             "test_case_name": "Validate Reset Functionality"
         },
         "test_case_2": {
-            "csv_name": "sprint_1.csv",
+            "csv_name": "test_combined.csv",
             "script_name": "test_case_2.py",
             "test_case_index": "2",
             "test_case_name": "Checkout Process Validation"
-        }
-    },
-    "sprint_2": {
-        "test_case_1": {
-            "csv_name": "sprint_2.csv",
-            "script_name": "test_case_1.py",
-            "test_case_index": "1",
+        },
+        "test_case_3": {
+            "csv_name": "test_combined.csv",
+            "script_name": "test_case_3.py",
+            "test_case_index": "3",
             "test_case_name": "E2E Checkout Flow"
         },
-        "test_case_2": {
-            "csv_name": "sprint_2.csv",
-            "script_name": "test_case_2.py",
-            "test_case_index": "2",
+        "test_case_4": {
+            "csv_name": "test_combined.csv",
+            "script_name": "test_case_4.py",
+            "test_case_index": "4",
             "test_case_name": "Add Items to Cart"
         }
     }
