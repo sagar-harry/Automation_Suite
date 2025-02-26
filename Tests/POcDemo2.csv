@@ -1,0 +1,66 @@
+Test Case Name,Selectors,Workflow,Additional Details
+Positive Login Test,"Username field: //input[@name='username']
+Password field: //input[@name='password']
+Submit button: //*[@id=""submit""]
+","1. Open the page : https://practicetestautomation.com/practice-test-login/
+2. Enter the username: 'student'
+3. Enter the password: 'Password123'
+4. Click submit
+5. Verify successful login """"",
+Negative Username Test,"Username field: //input[@name='username']
+Password field: //input[@name='password']
+Submit button: //*[@id=""submit""]
+Error Mesage: //div[text()='Your username is invalid!']","1. Open the page : https://practicetestautomation.com/practice-test-login/
+2. Enter the invalid username: 'incorrectUser'
+3. Enter the password: 'Password123'
+4. Click submit
+5. Verify error message for ""Your username is invalid!""",
+Negative Password Test,"Username field: //input[@name='username']
+Password field: //input[@name='password']
+Submit button: //*[@id=""submit""]
+Error Mesage: //div[text()='Your password is invalid!']","1. Open the page : https://practicetestautomation.com/practice-test-login/
+2. Enter the username: 'student'
+3. Enter the invalid password: 'incorrectPassword'
+4. Click submit
+5. Verify error message for ""Your password is invalid!""",
+Home Navigation and URL Verification,"//a[contains(text(),'Home')]","1. Navigate to the homepage ""https://practicetestautomation.com/""
+ 2. Click on the ""Home"" menu. 
+ 3. Wait for the page to load. 
+ 4. Verify that the page URL is https://practicetestautomation.com/.",
+Practice Navigation and URL Verification,"//a[contains(text(),'Practice')]","1. Navigate to the homepage ""https://practicetestautomation.com/""
+ 2. Click on the ""Practice"" menu. 
+ 3. Wait for the page to load. 
+ 4. Verify that the page URL is https://practicetestautomation.com/practice/.",
+Courses Navigation and URL Verification,"//a[contains(text(),'Courses')]","1. Navigate to the homepage ""https://practicetestautomation.com/""
+ 2. Click on the ""Courses"" menu. 
+ 3. Wait for the page to load. 
+ 4. Verify that the page URL is https://practicetestautomation.com/courses/.",
+Blog Navigation and URL Verification,"//a[contains(text(),'Blog')]","1. Navigate to the homepage ""https://practicetestautomation.com/""
+ 2. Click on the ""Blog"" menu. 
+ 3. Wait for the page to load. 
+ 4. Verify that the page URL is https://practicetestautomation.com/blog/.",
+Contact Navigation and URL Verification,"//a[contains(text(),'Contact')]","1. Navigate to the ""https://practicetestautomation.com/practice-test-exceptions/"" page. 
+ 2. Click on the ""Contact"" menu. 
+ 3. Wait for the page to load. 
+ 4. Verify that the page URL is https://practicetestautomation.com/contact/.",
+"Add Row, Enter Burger, Save, and Verify Message","//button[contains(text(),'Add')]
+//*[@id=""row2""]/input
+//*[@id=""save_btn""]
+//*[@id=""confirmation""]","1. Navigate to the ""https://practicetestautomation.com/practice-test-exceptions/"" page. 
+ 2. Click on the ""Add"" button to add a new row.
+ 3. Verify the message ""Row added successfully"". 
+ 4. Enter ""burger"" into the newly added row input field. 
+ 5. Click on the ""Save"" button. 
+ 6. Verify the message ""Row added successfully"".",
+Remove Added Row and Verify Message,"/button[contains(text(),'Add')]
+//*[@id=""row2""]/input
+//*[@id=""save_btn""]
+//*[@id=""confirmation""]
+//*[@id=""remove_btn""]","1. Navigate to the ""https://practicetestautomation.com/practice-test-exceptions/"" page. 
+ 2. Click on the ""Add"" button to add a new row.
+ 3. Verify the message ""Row added successfully"". 
+ 4. Enter ""burger"" into the newly added row input field. 
+ 5. Click on the ""Save"" button. 
+ 6. Verify the message ""Row added successfully"".
+ 2. After adding a row and entering ""burger"", click on the ""Remove"" button next to the added row. 
+ 3. Verify the message ""Row 2 was removed"".",
