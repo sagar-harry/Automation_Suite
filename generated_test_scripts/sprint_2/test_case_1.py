@@ -1,81 +1,113 @@
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import sys
 
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+
+    def login(self, username, password):
+        self.driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(username)
+        self.driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
+        self.driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+
 def main():
-    # Set up Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-popup-blocking")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_argument("--disable-features=NetworkService")
-    
-    # Initialize WebDriver
-    driver = webdriver.Chrome(options=chrome_options)
-    driver.implicitly_wait(10)
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    options.add_argument('--disable-notifications')
+    options.add_argument('--disable-popup-blocking')
+    options.add_argument('--incognito')
+    options.add_argument('--disable-features=NetworkService')
+
+    driver = webdriver.Chrome(options=options)
     
     try:
-        # Open the website
         driver.get("https://saucedemo.com/")
         time.sleep(5)
         driver.maximize_window()
 
-        # Login
-        driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys("standard_user")
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="password"]').send_keys("secret_sauce")
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+        login_page = LoginPage(driver)
+        login_page.login("standard_user", "secret_sauce")
 
-        # Add items to the cart
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))).click()
         time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
-        
-        # Go to cart
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a').click()
 
-        # Checkout process
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="checkout"]').click()
-        
-        # Enter user information
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="first-name"]'))).send_keys("somename")
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="last-name"]').send_keys("lastname")
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="postal-code"]').send_keys("123456")
-        
-        # Continue checkout
-        time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="continue"]').click()
-        
-        # Finish purchase
-        time.sleep(3)
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="finish"]'))).click()
+        bike_light = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')))
+        bike_light.click()
 
-        # Back to homepage
         time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="back-to-products"]').click()
-        
-        # Log out of the application
+
+        fleece_jacket = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')))
+        fleece_jacket.click()
+
         time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="react-burger-menu-btn"]').click()
+
+        cart_icon = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a')))
+        cart_icon.click()
+
         time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@id="logout_sidebar_link"]').click()
-        
+
+        checkout = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="checkout"]')))
+        checkout.click()
+
+        time.sleep(3)
+
+        first_name = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="first-name"]')))
+        first_name.send_keys("somename")
+
+        last_name = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="last-name"]')))
+        last_name.send_keys("lastname")
+
+        postal_code = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="postal-code"]')))
+        postal_code.send_keys("123456")
+
+        time.sleep(3)
+
+        continue_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="continue"]')))
+        continue_button.click()
+
+        time.sleep(3)
+
+        finish = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="finish"]')))
+        finish.click()
+
+        time.sleep(3)
+
+        back_to_products = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="back-to-products"]')))
+
+        logout_sidebar = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="react-burger-menu-btn"]')))
+        logout_sidebar.click()
+
+        time.sleep(3)
+
+        logout_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="logout_sidebar_link"]')))
+        logout_button.click()
+
+        time.sleep(3)
+
+        # Check if user is redirected to the login page
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="user-name"]')))
+
         sys.exit(0)
-    
     except Exception as e:
-        print(f"Test Failed: {e}")
+        print(e)
         sys.exit(1)
-
     finally:
         driver.quit()
 
