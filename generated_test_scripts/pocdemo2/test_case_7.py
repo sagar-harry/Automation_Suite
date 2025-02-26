@@ -1,47 +1,52 @@
 
-import sys
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import sys
 import time
 
 def test_blog_navigation():
     chrome_options = Options()
     chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-popup-blocking")
     chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-popup-blocking")
+    chrome_options.add_argument("start-maximized")
     chrome_options.add_argument("--disable-features=NetworkService")
-    
+
     driver = webdriver.Chrome(options=chrome_options)
-    
+
     try:
-        driver.maximize_window()
-        
+        # Navigate to homepage
         driver.get("https://practicetestautomation.com/")
-        time.sleep(5)
-        
-        wait = WebDriverWait(driver, 10)
-        
-        wait.until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Blog')]")))
         time.sleep(3)
-        
+
+        # Click on the "Blog" menu
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Blog')]"))
+        )
+        time.sleep(3)
         blog_menu = driver.find_element(By.XPATH, "//a[contains(text(),'Blog')]")
         blog_menu.click()
+
+        # Wait for page to load
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'elementor-widget-container')]"))
+        )
         time.sleep(3)
-        
-        wait.until(EC.url_to_be("https://practicetestautomation.com/blog/"))
-        
-        assert driver.current_url == "https://practicetestautomation.com/blog/"
-        sys.exit(0)
-        
+
+        # Verify the URL
+        if driver.current_url == "https://practicetestautomation.com/blog/":
+            sys.exit(0)
+        else:
+            sys.exit(1)
+    
     except Exception as e:
-        print(f"Test failed: {e}")
+        print(e)
         sys.exit(1)
-        
+
     finally:
         driver.quit()
 
-if __name__ == "__main__":
-    test_blog_navigation()
+test_blog_navigation()

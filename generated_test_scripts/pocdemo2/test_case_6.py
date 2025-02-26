@@ -1,52 +1,44 @@
 
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 import time
 import sys
 
-def test_ui_navigation():
-    # Setup Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-popup-blocking")
-    chrome_options.add_argument("--disable-features=NetworkService")
+# Configure Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--disable-popup-blocking")
+chrome_options.add_argument("--disable-features=NetworkService")
 
-    # Start the webdriver
-    driver = webdriver.Chrome(options=chrome_options)
+# Initialize the Chrome driver
+driver = webdriver.Chrome(options=chrome_options)
 
-    try:
-        # Maximize window
-        driver.maximize_window()
+try:
+    # Navigate to the homepage
+    driver.get("https://practicetestautomation.com/")
+    time.sleep(3)  # Wait for 3 seconds after opening the page
 
-        # Navigate to the homepage
-        driver.get("https://practicetestautomation.com/")
-        time.sleep(5)  # Wait for 5 seconds after opening the page
+    # Maximize the browser window
+    driver.maximize_window()
+    time.sleep(3)  # Wait for 3 seconds
 
-        # Wait before action and then click on the "Courses" menu
-        time.sleep(3)
-        courses_menu = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//a[contains(text(),'Courses')]"))
-        )
-        courses_menu.click()
+    # Click the "Courses" menu
+    courses_menu = driver.find_element(By.XPATH, "//a[contains(text(),'Courses')]")
+    courses_menu.click()
+    time.sleep(3)  # Wait for 3 seconds
 
-        # Wait for the page to load
-        time.sleep(3)
+    # Wait for the page to load and verify the URL
+    if driver.current_url == "https://practicetestautomation.com/courses/":
+        sys.exit(0)  # Test case passed
+    else:
+        sys.exit(1)  # Test case failed
 
-        # Verify that the page URL is correct
-        current_url = driver.current_url
-        if current_url == "https://practicetestautomation.com/courses/":
-            sys.exit(0)
-        else:
-            sys.exit(1)
+except Exception as e:
+    print(str(e))
+    sys.exit(1)  # Test case failed
 
-    except Exception as e:
-        sys.exit(1)
-    finally:
-        driver.quit()
-
-if __name__ == "__main__":
-    test_ui_navigation()
+finally:
+    # Close the browser
+    driver.quit()
