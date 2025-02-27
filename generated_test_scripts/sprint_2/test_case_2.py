@@ -1,78 +1,72 @@
 
-import sys
 import time
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-class LoginPage:
-    def __init__(self, driver):
-        self.driver = driver
+# Define URL, credentials, and locators
+URL = "https://saucedemo.com/"
+USERNAME = "standard_user"
+PASSWORD = "secret_sauce"
+locators = {
+    "username": '//*[@id="user-name"]',
+    "password": '//*[@id="password"]',
+    "login_button": '//*[@id="login-button"]',
+    "bike_light": '//*[@id="add-to-cart-sauce-labs-bike-light"]',
+    "fleece_jacket": '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]',
+    "cart_count": '//*[@id="shopping_cart_container"]/a/span'
+}
 
-    def login(self, username, password):
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="user-name"]'))
-        ).send_keys(username)
-        time.sleep(3)
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="password"]'))
-        ).send_keys(password)
-        time.sleep(3)
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="login-button"]'))
-        ).click()
+# Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--disable-features=NetworkService")
+chrome_options.add_argument("start-maximized")
 
-def main():
-    url = "https://saucedemo.com/"
-    username = "standard_user"
-    password = "secret_sauce"
+# Initialize WebDriver
+driver = webdriver.Chrome(options=chrome_options)
 
-    chrome_options = Options()
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-features=NetworkService")
+try:
+    # Open the website
+    driver.get(URL)
+    time.sleep(5)  # Wait for the page to load
 
-    driver = webdriver.Chrome(options=chrome_options)
+    # Login to the site
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, locators["username"])))
+    driver.find_element(By.XPATH, locators["username"]).send_keys(USERNAME)
+    time.sleep(3)  # Wait before the next action
+    driver.find_element(By.XPATH, locators["password"]).send_keys(PASSWORD)
+    time.sleep(3)  # Wait before the next action
+    driver.find_element(By.XPATH, locators["login_button"]).click()
     
-    try:
-        driver.get(url)
-        time.sleep(5)
-        driver.maximize_window()
+    # Wait for and add Bike Light to the cart
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, locators["bike_light"])))
+    driver.find_element(By.XPATH, locators["bike_light"]).click()
+    time.sleep(3)  # Wait before the next action
 
-        login_page = LoginPage(driver)
-        login_page.login(username, password)
+    # Wait for and add Fleece Jacket to the cart
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, locators["fleece_jacket"])))
+    driver.find_element(By.XPATH, locators["fleece_jacket"]).click()
+    time.sleep(3)  # Wait before the next action
 
-        time.sleep(3)
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))
-        ).click()
+    # Verify cart count
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, locators["cart_count"])))
+    cart_count = driver.find_element(By.XPATH, locators["cart_count"]).text
 
-        time.sleep(3)
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))
-        ).click()
-
-        time.sleep(3)
-        cart_count_element = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span'))
-        )
-        cart_count = cart_count_element.text
-
-        if cart_count == '2':
-            driver.save_screenshot(r'C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\cart_test_passed.png')
-            sys.exit(0)
-        else:
-            raise Exception("Cart count did not match expected value.")
-
-    except Exception as e:
-        driver.save_screenshot(r'C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\cart_test_failed.png')
-        print(e)
+    if cart_count == '2':
+        driver.save_screenshot("C:\\Users\\Administrator\\Desktop\\QE_COE\\automated_pipeline_2\\captured_screenshots\\cart_test_passed.png")
+        sys.exit(0)
+    else:
+        driver.save_screenshot("C:\\Users\\Administrator\\Desktop\\QE_COE\\automated_pipeline_2\\captured_screenshots\\cart_test_failed.png")
         sys.exit(1)
 
-    finally:
-        driver.quit()
-
-if __name__ == "__main__":
-    main()
+except Exception as e:
+    driver.save_screenshot("C:\\Users\\Administrator\\Desktop\\QE_COE\\automated_pipeline_2\\captured_screenshots\\exception_occurred.png")
+    sys.exit(1)
+finally:
+    # Clean-up actions
+    driver.quit()
