@@ -1,86 +1,97 @@
 
+import sys
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
-import sys
 
-def main():
-    try:
-        options = webdriver.ChromeOptions()
-        options.add_argument("--disable-notifications")
-        options.add_argument("--disable-popup-blocking")
-        options.add_argument("--incognito")
-        options.add_argument("--disable-features=NetworkService")
-
-        # Initialize WebDriver
-        driver = webdriver.Chrome(options=options)
-
-        # Open the website and maximize window
-        driver.get("https://saucedemo.com/")
-        time.sleep(5)
-        driver.maximize_window()
-
-        # Login
-        username_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="user-name"]')))
-        username_input.send_keys("standard_user")
-        time.sleep(3)
-        password_input = driver.find_element(By.XPATH, '//*[@id="password"]')
-        password_input.send_keys("secret_sauce")
-        time.sleep(3)
-        login_button = driver.find_element(By.XPATH, '//*[@id="login-button"]')
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+    
+    def login(self, username, password):
+        username_field = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="user-name"]'))
+        )
+        password_field = self.driver.find_element(By.XPATH, '//*[@id="password"]')
+        login_button = self.driver.find_element(By.XPATH, '//*[@id="login-button"]')
+        
+        username_field.send_keys(username)
+        password_field.send_keys(password)
         login_button.click()
 
-        # Add 'Bike Light' to cart
-        time.sleep(3)
-        bike_light_add_btn = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')))
-        bike_light_add_btn.click()
+def run_test():
+    options = Options()
+    options.add_argument("--incognito")
+    options.add_argument("--disable-notifications")
+    options.add_argument("--disable-features=NetworkService")
 
-        # Add 'Fleece Jacket' to cart
-        time.sleep(3)
-        fleece_jacket_add_btn = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]')))
-        fleece_jacket_add_btn.click()
+    driver = webdriver.Chrome(options=options)
 
-        # Verify cart count is '2'
-        time.sleep(3)
-        cart_count = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
-        assert cart_count.text == '2'
+    try:
+        driver.maximize_window()
+        driver.get("https://saucedemo.com/")
+        time.sleep(5)
 
-        # Remove bike light
-        time.sleep(3)
-        bike_light_remove = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]')))
-        bike_light_remove.click()
+        login_page = LoginPage(driver)
+        login_page.login("standard_user", "secret_sauce")
 
-        # Remove fleece jacket
         time.sleep(3)
-        fleece_jacket_remove = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')))
-        fleece_jacket_remove.click()
 
-        # Verify cart count element doesn't exist
+        bike_light = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))
+        )
+        bike_light.click()
+        
         time.sleep(3)
-        assert not driver.find_elements(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
 
-        # Add 'Bolt T-Shirt' to cart
-        time.sleep(3)
-        bolt_tshirt_add_btn = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')))
-        bolt_tshirt_add_btn.click()
+        fleece_jacket = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]'))
+        )
+        fleece_jacket.click()
 
-        # Verify cart count is '1'
         time.sleep(3)
-        cart_count = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
-        assert cart_count.text == '1'
+
+        cart_badge = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span'))
+        )
+
+        assert cart_badge.text == '2', "Cart badge does not show correct number"
+
+        remove_bike_light = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]'))
+        )
+        remove_bike_light.click()
+
+        time.sleep(3)
+
+        remove_fleece_jacket = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')
+        remove_fleece_jacket.click()
+
+        # Check cart count element doesn't exist
+        time.sleep(3)
+        if driver.find_elements(By.XPATH, '//*[@id="shopping_cart_container"]/a/span'):
+            raise AssertionError("Cart count element still exists after removal")
+
+        bolt_tshirt = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))
+        )
+        bolt_tshirt.click()
+
+        time.sleep(3)
+
+        cart_badge = driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        assert cart_badge.text == '1', "Cart badge does not reflect new count"
 
         sys.exit(0)
-
+        
     except Exception as e:
-        driver.save_screenshot("C:\\Users\\Administrator\\Desktop\\QE_COE\\automated_pipeline_2\\captured_screenshots\\error_screenshot.png")
+        driver.save_screenshot("C:\\Users\\Administrator\\Desktop\\QE_COE\\automated_pipeline_2\\captured_screenshots\\screenshot.png")
         sys.exit(1)
-
+        
     finally:
-        time.sleep(3)
         driver.quit()
 
-if __name__ == "__main__":
-    main()
+run_test()
