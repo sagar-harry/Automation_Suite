@@ -4,84 +4,82 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import time
 import sys
 
-def test_login_logout_flow():
+def test_purchase_flow():
     try:
-        # Setup Chrome options
+        # Set up Chrome options
         chrome_options = Options()
         chrome_options.add_argument("--incognito")
-        chrome_options.add_argument("--disable-popup-blocking")
-        chrome_options.add_argument("--disable-notifications")
         chrome_options.add_argument("--disable-features=NetworkService")
+        chrome_options.add_argument("--disable-notifications")
 
-        # Initialize WebDriver
+        # Initialize the WebDriver
         driver = webdriver.Chrome(options=chrome_options)
         driver.maximize_window()
-        driver.implicitly_wait(10)  # Implicit wait
-
-        # Open the website
+        
+        # Navigate to the website
         driver.get("https://saucedemo.com/")
-        time.sleep(5)  # Wait for 5 secs after opening the page
+        time.sleep(5)
         
-        wait = WebDriverWait(driver, 10)  # Explicit wait
-
-        # Login
-        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="user-name"]'))).send_keys("standard_user")
+        # Login process
+        driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys("standard_user")
         time.sleep(3)
-        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="password"]'))).send_keys("secret_sauce")
+        driver.find_element(By.XPATH, '//*[@id="password"]').send_keys("secret_sauce")
         time.sleep(3)
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="login-button"]'))).click()
+        driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
         time.sleep(3)
         
-        # Add items to cart
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))).click()
+        # Add items to the cart
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]'))).click()
         time.sleep(3)
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))).click()
-        time.sleep(3)
-        
-        # Go to cart
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="shopping_cart_container"]/a'))).click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]'))).click()
         time.sleep(3)
         
-        # Proceed to checkout
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="checkout"]'))).click()
+        # Navigate to cart and checkout
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a'))).click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="checkout"]'))).click()
         time.sleep(3)
         
         # Enter checkout information
-        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="first-name"]'))).send_keys("somename")
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="first-name"]'))).send_keys('Jonnathan')
         time.sleep(3)
-        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="last-name"]'))).send_keys("lastname")
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="last-name"]'))).send_keys('K')
         time.sleep(3)
-        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="postal-code"]'))).send_keys("123456")
-        time.sleep(3)
-        
-        # Continue and finish purchase
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="continue"]'))).click()
-        time.sleep(3)
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="finish"]'))).click()
-        time.sleep(3)
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="back-to-products"]')))
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="postal-code"]'))).send_keys('10007')
         time.sleep(3)
         
-        # Logout
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="react-burger-menu-btn"]'))).click()
+        # Finalize the purchase
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="continue"]'))).click()
         time.sleep(3)
-        wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="logout_sidebar_link"]'))).click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="finish"]'))).click()
         time.sleep(3)
-
+        
+        # Return to homepage
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="back-to-products"]'))).click()
+        time.sleep(3)
+        
+        # Logout process
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="react-burger-menu-btn"]'))).click()
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="logout_sidebar_link"]'))).click()
+        time.sleep(3)
+        
         # Save screenshot
-        driver.save_screenshot("C:\\Users\\Administrator\\Desktop\\QE_COE\\automated_pipeline_2\\captured_screenshots\\final_state.png")
+        driver.save_screenshot(r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\screenshot.png")
         
-        # Test passed
+        # Close the browser
+        driver.quit()
+        
+        # Exit with success code
         sys.exit(0)
-
+    
     except Exception as e:
-        print(f"Test failed: {str(e)}")
+        print(f"Test failed: {e}")
+        driver.quit()
         sys.exit(1)
 
-    finally:
-        driver.quit()
-
-test_login_logout_flow()
+test_purchase_flow()
