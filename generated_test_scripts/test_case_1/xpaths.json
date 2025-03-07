@@ -1,0 +1,20 @@
+{
+    "xpaths": [
+        {
+            "element_name": "Username Field",
+            "xpath": "//input[@data-test='username']"
+        },
+        {
+            "element_name": "Password Field",
+            "xpath": "//input[@data-test='password']"
+        },
+        {
+            "element_name": "Login Button",
+            "xpath": "//input[@data-test='login-button']"
+        },
+        {
+            "element_name": "Products Title",
+            "xpath": "//span[@data-test='title']"
+        }
+    ]
+}
