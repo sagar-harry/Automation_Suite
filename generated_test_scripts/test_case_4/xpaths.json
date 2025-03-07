@@ -1,44 +1,36 @@
 {
     "xpaths": [
         {
-            "element_name": "username_input",
-            "xpath": "//input[@data-test='username']"
+            "element_name": "Sauce Labs Backpack in Cart",
+            "xpath": "//*[@data-test='inventory-item-name' and text()='Sauce Labs Backpack']"
         },
         {
-            "element_name": "password_input",
-            "xpath": "//input[@data-test='password']"
+            "element_name": "Checkout Button",
+            "xpath": "//*[@data-test='checkout']"
         },
         {
-            "element_name": "login_button",
-            "xpath": "//input[@data-test='login-button']"
+            "element_name": "First Name Input",
+            "xpath": "//*[@id='first-name']"
         },
         {
-            "element_name": "product_card_sauce_labs_backpack",
-            "xpath": "//div[@class='inventory_item'][descendant::div[@class='inventory_item_name' and text()='Sauce Labs Backpack']]"
+            "element_name": "Last Name Input",
+            "xpath": "//*[@id='last-name']"
         },
         {
-            "element_name": "add_to_cart_button_sauce_labs_backpack",
-            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Postal Code Input",
+            "xpath": "//*[@id='postal-code']"
         },
         {
-            "element_name": "shopping_cart_icon",
-            "xpath": "//a[@data-test='shopping-cart-link']"
+            "element_name": "Continue Button",
+            "xpath": "//*[@data-test='continue']"
         },
         {
-            "element_name": "checkout_button",
-            "xpath": "//button[@data-test='checkout']"
+            "element_name": "Finish Button",
+            "xpath": "//*[@data-test='finish']"
         },
         {
-            "element_name": "first_name_input",
-            "xpath": "//input[@data-test='firstName']"
-        },
-        {
-            "element_name": "last_name_input",
-            "xpath": "//input[@data-test='lastName']"
-        },
-        {
-            "element_name": "postal_code_input",
-            "xpath": "//input[@data-test='postalCode']"
+            "element_name": "Order Confirmation Message",
+            "xpath": "//*[@data-test='complete-header' and text()='Thank you for your order!']"
         }
     ]
 }

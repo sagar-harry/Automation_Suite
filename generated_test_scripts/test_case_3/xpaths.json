@@ -1,28 +1,12 @@
 {
     "xpaths": [
         {
-            "element_name": "username_input",
-            "xpath": "//input[@id='user-name']"
+            "element_name": "shopping_cart_badge",
+            "xpath": "//div[@class='shopping_cart_container']//span[@data-test='shopping-cart-badge']"
         },
         {
-            "element_name": "password_input",
-            "xpath": "//input[@id='password']"
-        },
-        {
-            "element_name": "login_button",
-            "xpath": "//input[@id='login-button']"
-        },
-        {
-            "element_name": "add_sauce_labs_backpack_button",
-            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
-        },
-        {
-            "element_name": "shopping_cart_link",
-            "xpath": "//a[@class='shopping_cart_link']"
-        },
-        {
-            "element_name": "remove_sauce_labs_backpack_button",
-            "xpath": "//button[@id='remove-sauce-labs-backpack']"
+            "element_name": "remove_button_sauce_labs_backpack",
+            "xpath": "//button[@data-test='remove-sauce-labs-backpack']"
         }
     ]
 }

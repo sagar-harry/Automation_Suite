@@ -1,74 +1,69 @@
 
-from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import sys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from time import sleep
 from compare_sentences import compare_sentences
+import sys
 
 def main():
-    url = "https://www.saucedemo.com"
-    expected_product_page_title = "Products"
-    expected_checkout_info_page_title = "Checkout: Your Information"
-    
-    # Set up Chrome options
+    # Chrome options setup
     chrome_options = Options()
     chrome_options.add_argument("--disable-notifications")
     chrome_options.add_argument("--disable-popup-blocking")
     chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--start-maximized")
 
-    # Initialize webdriver
+    # Initialize driver
     driver = webdriver.Chrome(options=chrome_options)
-    driver.maximize_window()
-    driver.get(url)
+    wait = WebDriverWait(driver, 10)
 
     try:
-        # Wait for page load
+        # Navigate to the home page
+        driver.get("https://www.saucedemo.com")
+        
+        # Step 1: Ensure Sauce Labs Backpack is in the cart
+        driver.get("https://www.saucedemo.com/cart.html")
+        sleep(3) # Wait for cart page to load
+        wait.until(EC.presence_of_element_located((By.XPATH, "//*[@data-test='inventory-item-name' and text()='Sauce Labs Backpack']")))
+
+        # Step 2: Navigate to checkout Step 1 page
+        checkout_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[@data-test='checkout']")))
+        checkout_button.click()
         sleep(3)
 
-        # Step 1: Login
-        driver.find_element(By.XPATH, "//input[@data-test='username']").send_keys("standard_user")
-        sleep(3)
-        driver.find_element(By.XPATH, "//input[@data-test='password']").send_keys("secret_sauce")
-        sleep(3)
-        driver.find_element(By.XPATH, "//input[@data-test='login-button']").click()
+        # Step 3: Fill in user information
+        first_name_input = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='first-name']")))
+        last_name_input = driver.find_element(By.XPATH, "//*[@id='last-name']")
+        postal_code_input = driver.find_element(By.XPATH, "//*[@id='postal-code']")
+
+        first_name_input.send_keys("John")
+        last_name_input.send_keys("Doe")
+        postal_code_input.send_keys("90210")
+
+        # Step 4: Click continue to proceed to checkout overview
+        continue_button = driver.find_element(By.XPATH, "//*[@data-test='continue']")
+        continue_button.click()
         sleep(3)
 
-        # Verify redirection to product listing page
-        current_page_title = driver.find_element(By.XPATH, "//span[@data-test='title']").text
-        assert compare_sentences(current_page_title, expected_product_page_title)
-
-        # Step 2: Add product to cart
-        driver.find_element(By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']").click()
+        # Step 5: Finalize checkout by clicking finish
+        finish_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[@data-test='finish']")))
+        finish_button.click()
         sleep(3)
 
-        # Navigate to shopping cart
-        driver.find_element(By.XPATH, "//a[@data-test='shopping-cart-link']").click()
-        sleep(3)
+        # Step 6: Verify order confirmation message
+        confirmation_message = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@data-test='complete-header' and text()='Thank you for your order!']")))
 
-        # Click Checkout
-        driver.find_element(By.XPATH, "//button[@data-test='checkout']").click()
-        sleep(3)
-
-        # Verify redirection to Checkout Step 1: User Info Page
-        current_checkout_title = driver.find_element(By.XPATH, "//span[@data-test='title']").text
-        assert compare_sentences(current_checkout_title, expected_checkout_info_page_title)
-
-        # Step 3: Fill user info
-        driver.find_element(By.XPATH, "//input[@data-test='firstName']").send_keys("John")
-        sleep(3)
-        driver.find_element(By.XPATH, "//input[@data-test='lastName']").send_keys("Doe")
-        sleep(3)
-        driver.find_element(By.XPATH, "//input[@data-test='postalCode']").send_keys("12345")
-        sleep(3)
-
-        print("Test case passed.")
+        assert compare_sentences(confirmation_message.text, "Thank you for your order!") == 0
         sys.exit(0)
 
-    except Exception as e:
-        print(f"Test case failed: {e}")
+    except (TimeoutException, NoSuchElementException) as e:
+        print(f"Test Failed: {e}")
         sys.exit(1)
-
+    
     finally:
         driver.quit()
 

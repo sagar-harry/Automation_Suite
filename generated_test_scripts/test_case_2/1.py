@@ -1,69 +1,65 @@
 
-import sys
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
+from time import sleep
+import sys
 from compare_sentences import compare_sentences
 
-# Setup Chrome options
-chrome_options = Options()
-chrome_options.add_argument("--disable-notifications")
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--start-maximized")
+# Set Chrome options to disable notifications, pop-ups, and enable incognito
+options = Options()
+options.add_argument("--disable-notifications")
+options.add_argument("--disable-popup-blocking")
+options.add_argument("--incognito")
+options.add_argument("--start-maximized")
 
-# Initialize WebDriver
-driver = webdriver.Chrome(options=chrome_options)
-wait = WebDriverWait(driver, 10)
+# Initialize the WebDriver
+driver = webdriver.Chrome(options=options)
+driver.maximize_window()
 
-try:
-    # Step 1: Given the browser is at the SauceDemo login page
-    driver.get("https://www.saucedemo.com")
-    time.sleep(3)
-
-    # Step 2: When the user enters username `standard_user` and password `secret_sauce`
-    username_input = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']")))
-    password_input = driver.find_element(By.XPATH, "//input[@id='password']")
-    username_input.send_keys("standard_user")
-    time.sleep(3)
-    password_input.send_keys("secret_sauce")
-    time.sleep(3)
-
-    # Step 3: And clicks on the login button
-    login_button = driver.find_element(By.XPATH, "//input[@id='login-button']")
-    login_button.click()
-    time.sleep(3)
-
-    # Step 4: Then the user should be redirected to the product listing page
-    wait.until(EC.presence_of_element_located((By.XPATH, "//span[@class='title' and text()='Products']")))
-
-    # Step 5: When the user clicks on the `Add to cart` button for the `Sauce Labs Backpack`
-    add_to_cart_button = driver.find_element(By.XPATH, "//button[@id='add-to-cart-sauce-labs-backpack']")
-    add_to_cart_button.click()
-    time.sleep(3)
-
-    # Step 6: And navigates to the shopping cart by clicking the cart icon
-    cart_icon = driver.find_element(By.XPATH, "//a[@class='shopping_cart_link']")
-    cart_icon.click()
-    time.sleep(3)
-
-    # Step 7: Then the Shopping Cart page should be displayed with the `Sauce Labs Backpack` listed
-    cart_item_name = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='inventory_item_name' and text()='Sauce Labs Backpack']")))
+# Function to perform login
+def login():
+    driver.get('https://www.saucedemo.com/')
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'user-name')))
     
-    # Use compare_sentences to verify item name matches exactly
-    assert compare_sentences(cart_item_name.text, "Sauce Labs Backpack")
+    # Log in with credentials
+    driver.find_element(By.ID, 'user-name').send_keys('standard_user')
+    driver.find_element(By.ID, 'password').send_keys('secret_sauce')
+    driver.find_element(By.ID, 'login-button').send_keys(Keys.RETURN)
+    sleep(3)  # Wait for 3 seconds
 
-    # Exit indicating pass
-    sys.exit(0)
+# Function to add product to the cart
+def add_product_to_cart():
+    try:
+        # Wait for the add to cart button to be available and click it
+        add_to_cart_button_xpath = "//button[@id='add-to-cart-sauce-labs-backpack']"
+        add_to_cart_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, add_to_cart_button_xpath)))
+        add_to_cart_button.click()
+        sleep(3)  # Wait for 3 seconds
 
-except Exception as e:
-    print(f"Test failed due to: {e}")
-    # Exit indicating failure
-    sys.exit(1)
+        # Verify cart badge
+        cart_badge_xpath = "//div[@id='shopping_cart_container']//span[@class='shopping_cart_badge']"
+        cart_badge = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, cart_badge_xpath)))
+        badge_text = cart_badge.text
 
+        assert compare_sentences(badge_text, "1"), "Cart badge does not display '1'."
+        
+        # Test successful
+        sys.exit(0)
+    except TimeoutException:
+        print("Element not found. Test failed.")
+        sys.exit(1)
+    except AssertionError as ae:
+        print(f"Assertion error: {str(ae)}")
+        sys.exit(1)
+
+# Execute the test case
+try:
+    login()
+    add_product_to_cart()
 finally:
     driver.quit()
-
