@@ -8,65 +8,77 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from compare_sentences import compare_sentences
 
-def test_login_and_product_listing():
-    # Configure Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-popup-blocking")
-    chrome_options.add_argument("--start-maximized")
-
-    # Initialize the driver
-    driver = webdriver.Chrome(options=chrome_options)
-
+def main():
+    options = Options()
+    options.add_argument("--incognito")
+    options.add_argument("--disable-popup-blocking")
+    options.add_argument("--disable-notifications")
+    driver = webdriver.Chrome(options=options)
+    
     try:
-        # Step 1: Open the SauceDemo website
-        driver.get("https://saucedemo.com/")
+        # Maximize the page
+        driver.maximize_window()
+        
+        # Navigate to the specified URL
+        driver.get("https://saucedemo.com")
+        
+        # Wait for the page to load
         time.sleep(3)
-
-        # Step 2: Find the username input field and enter 'standard_user'
+        
+        # Locate and fill in the username
         username_input = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//*[@id='user-name']"))
-        )
+            EC.visibility_of_element_located((By.XPATH, "//input[@id='user-name']")))
         username_input.send_keys("standard_user")
         time.sleep(3)
-
-        # Step 3: Find the password input field and enter 'secret_sauce'
+        
+        # Locate and fill in the password
         password_input = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//*[@id='password']"))
-        )
+            EC.visibility_of_element_located((By.XPATH, "//input[@id='password']")))
         password_input.send_keys("secret_sauce")
         time.sleep(3)
 
-        # Step 4: Find the login button and click it
+        # Locate and click the login button
         login_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//*[@data-test='login-button']"))
-        )
+            EC.visibility_of_element_located((By.XPATH, "//input[@id='login-button']")))
         login_button.click()
         time.sleep(3)
+        
+        # Verify if redirected to the product listing page
+        expected_title = "Products"
+        actual_title_element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//span[@class='title']")))
+        actual_title = actual_title_element.text
 
-        # Step 5: Verify redirection to the Product Listing Page
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/inventory.html")
-        )
-        assert compare_sentences(driver.current_url, driver.current_url.split("?")[0] + "/inventory.html")
+        if not compare_sentences(expected_title, actual_title):
+            print("Failed to redirect to product listing page.")
+            sys.exit(1)
+        
+        # Locate and click the 'Add to cart' button for 'Sauce Labs Backpack'
+        add_to_cart_button = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//button[@id='add-to-cart-sauce-labs-backpack']")))
+        add_to_cart_button.click()
         time.sleep(3)
 
-        # Step 6: Check the presence of products in the listing
-        products_in_listing = WebDriverWait(driver, 10).until(
-            EC.visibility_of_all_elements_located((By.XPATH, "//*[@class='inventory_item']"))
-        )
-        assert len(products_in_listing) > 0
+        # Verify that the product is added to the cart and the cart badge is updated
+        cart_badge = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[@id='shopping_cart_container']//span[@class='shopping_cart_badge']")))
+        
+        expected_cart_count = "1"
+        actual_cart_count = cart_badge.text
 
+        if not compare_sentences(expected_cart_count, actual_cart_count):
+            print("Cart badge did not update correctly.")
+            sys.exit(1)
+            
         print("Test case passed.")
         sys.exit(0)
-
+        
     except Exception as e:
-        print(f"Test case failed: {e}")
+        print(f"An error occurred: {e}")
         sys.exit(1)
-
+        
     finally:
         driver.quit()
 
 if __name__ == "__main__":
-    test_login_and_product_listing()
+    main()

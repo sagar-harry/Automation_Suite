@@ -1,6 +1,6 @@
 
-import time
 import sys
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -8,64 +8,62 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from compare_sentences import compare_sentences
 
-def run_test():
-    options = Options()
-    options.add_argument("--disable-notifications")
-    options.add_argument("--disable-popup")
-    options.add_argument("--incognito")
-    options.add_argument("--start-maximized")
+# Setup Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--start-maximized")
+
+# Initialize WebDriver
+driver = webdriver.Chrome(options=chrome_options)
+wait = WebDriverWait(driver, 10)
+
+try:
+    # Step 1: Given the browser is at the SauceDemo login page
+    driver.get("https://www.saucedemo.com")
+    time.sleep(3)
+
+    # Step 2: When the user enters username `standard_user` and password `secret_sauce`
+    username_input = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']")))
+    password_input = driver.find_element(By.XPATH, "//input[@id='password']")
+    username_input.send_keys("standard_user")
+    time.sleep(3)
+    password_input.send_keys("secret_sauce")
+    time.sleep(3)
+
+    # Step 3: And clicks on the login button
+    login_button = driver.find_element(By.XPATH, "//input[@id='login-button']")
+    login_button.click()
+    time.sleep(3)
+
+    # Step 4: Then the user should be redirected to the product listing page
+    wait.until(EC.presence_of_element_located((By.XPATH, "//span[@class='title' and text()='Products']")))
+
+    # Step 5: When the user clicks on the `Add to cart` button for the `Sauce Labs Backpack`
+    add_to_cart_button = driver.find_element(By.XPATH, "//button[@id='add-to-cart-sauce-labs-backpack']")
+    add_to_cart_button.click()
+    time.sleep(3)
+
+    # Step 6: And navigates to the shopping cart by clicking the cart icon
+    cart_icon = driver.find_element(By.XPATH, "//a[@class='shopping_cart_link']")
+    cart_icon.click()
+    time.sleep(3)
+
+    # Step 7: Then the Shopping Cart page should be displayed with the `Sauce Labs Backpack` listed
+    cart_item_name = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='inventory_item_name' and text()='Sauce Labs Backpack']")))
     
-    driver = webdriver.Chrome(options=options)
-    wait = WebDriverWait(driver, 10)
-    
-    try:
-        # Step 1: Open the SauceDemo website
-        driver.get("https://saucedemo.com/")
-        time.sleep(3)
+    # Use compare_sentences to verify item name matches exactly
+    assert compare_sentences(cart_item_name.text, "Sauce Labs Backpack")
 
-        # Step 2: Find the username input field by ID 'user-name' and enter 'standard_user'
-        username_field = wait.until(EC.visibility_of_element_located((By.XPATH, "//input[@id='user-name']")))
-        username_field.send_keys("standard_user")
-        time.sleep(3)
+    # Exit indicating pass
+    sys.exit(0)
 
-        # Step 3: Find the password input field by ID 'password' and enter 'secret_sauce'
-        password_field = wait.until(EC.visibility_of_element_located((By.XPATH, "//input[@id='password']")))
-        password_field.send_keys("secret_sauce")
-        time.sleep(3)
+except Exception as e:
+    print(f"Test failed due to: {e}")
+    # Exit indicating failure
+    sys.exit(1)
 
-        # Step 4: Find the login button by data-test attribute 'login-button' and click it
-        login_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@data-test='login-button']")))
-        login_button.click()
-        time.sleep(3)
-        
-        # Step 5: Verify redirection to the Product Listing Page with URL '/inventory.html'
-        wait.until(EC.url_contains("/inventory.html"))
-        actual_url = driver.current_url
-        expected_url = "https://www.saucedemo.com/inventory.html"
-        if compare_sentences(actual_url, expected_url):
-            print("Redirection to Product Listing Page verified.")
-        else:
-            print("Redirection to Product Listing Page failed.")
-            sys.exit(1)
-        
-        # Step 6: Click the 'Add to cart' button for an item using the data-test attribute 'add-to-cart-sauce-labs-backpack'
-        add_to_cart_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']")))
-        add_to_cart_button.click()
-        time.sleep(3)
+finally:
+    driver.quit()
 
-        # Step 7: Verify the shopping cart icon shows a badge indicating one item is added by checking the class 'shopping_cart_badge'
-        cart_badge = wait.until(EC.visibility_of_element_located((By.XPATH, "//span[@class='shopping_cart_badge']")))
-        actual_badge_count = cart_badge.text
-        expected_badge_count = "1"
-        if compare_sentences(actual_badge_count, expected_badge_count):
-            print("Shopping cart badge correctly shows 1 item.")
-            sys.exit(0)
-        else:
-            print("Shopping cart badge verification failed.")
-            sys.exit(1)
-    
-    finally:
-        driver.quit()
-
-if __name__ == '__main__':
-    run_test()

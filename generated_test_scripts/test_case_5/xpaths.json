@@ -1,48 +1,52 @@
 {
     "xpaths": [
         {
-            "element_name": "Username Input Field",
+            "element_name": "Login Username",
             "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "Password Input Field",
+            "element_name": "Login Password",
             "xpath": "//input[@id='password']"
         },
         {
             "element_name": "Login Button",
-            "xpath": "//input[@data-test='login-button']"
+            "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "Add to Cart Button for Sauce Labs Backpack",
-            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Product Listing Page - Sauce Labs Backpack Add to Cart",
+            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "Proceed to Checkout Button",
-            "xpath": "//button[@data-test='checkout']"
+            "element_name": "Shopping Cart",
+            "xpath": "//a[@class='shopping_cart_link']"
         },
         {
-            "element_name": "First Name Input Field",
+            "element_name": "Checkout Button",
+            "xpath": "//button[@id='checkout']"
+        },
+        {
+            "element_name": "First Name",
             "xpath": "//input[@id='first-name']"
         },
         {
-            "element_name": "Last Name Input Field",
+            "element_name": "Last Name",
             "xpath": "//input[@id='last-name']"
         },
         {
-            "element_name": "Postal Code Input Field",
+            "element_name": "Postal Code",
             "xpath": "//input[@id='postal-code']"
         },
         {
-            "element_name": "Continue Button on Form",
-            "xpath": "//input[@data-test='continue']"
+            "element_name": "Continue Button (Step 1)",
+            "xpath": "//input[@id='continue']"
         },
         {
-            "element_name": "Finish Button on Overview Page",
-            "xpath": "//button[@data-test='finish']"
+            "element_name": "Finish Button",
+            "xpath": "//button[@id='finish']"
         },
         {
-            "element_name": "Confirmation Message",
-            "xpath": "//h2[@data-test='complete-header' and text()='Thank you for your order!']"
+            "element_name": "Order Confirmation Message",
+            "xpath": ".//h2[text()='Thank you for your order!']"
         }
     ]
 }

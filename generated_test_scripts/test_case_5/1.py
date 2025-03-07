@@ -8,114 +8,74 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from compare_sentences import compare_sentences
 
-def run_test():
-    # Disable notifications, pop-ups and run in incognito mode
+def main():
     chrome_options = Options()
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-popup-blocking")
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--start-maximized")
+    # Disable notifications, pop-ups and run in incognito mode
+    chrome_options.add_argument('--disable-notifications')
+    chrome_options.add_argument('--disable-popup-blocking')
+    chrome_options.add_argument('--incognito')
 
     driver = webdriver.Chrome(options=chrome_options)
+    driver.maximize_window()
 
     try:
-        # Open the SauceDemo website
-        driver.get("https://saucedemo.com/")
+        # Step 1: Navigate to the SauceDemo login page
+        driver.get('https://saucedemo.com')
         time.sleep(3)
 
-        # Find the username input field by ID 'user-name' and enter 'standard_user'
-        username_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']"))
-        )
+        # Step 2: Enter Login Credentials
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']"))).send_keys('standard_user')
         time.sleep(3)
-        username_field.send_keys('standard_user')
-
-        # Find the password input field by ID 'password' and enter 'secret_sauce'
-        password_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='password']"))
-        )
-        time.sleep(3)
-        password_field.send_keys('secret_sauce')
-
-        # Find the login button by data-test attribute 'login-button' and click it
-        login_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@data-test='login-button']"))
-        )
-        time.sleep(3)
-        login_button.click()
-
-        # Verify redirection to the Product Listing Page with URL '/inventory.html'
-        WebDriverWait(driver, 10).until(
-            EC.url_contains('/inventory.html')
-        )
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='password']"))).send_keys('secret_sauce')
         time.sleep(3)
 
-        # Add a product to the cart
-        add_to_cart_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']"))
-        )
-        time.sleep(3)
-        add_to_cart_button.click()
-
-        # Proceed to checkout by filling user info and reaching the Overview page
-        proceed_to_checkout_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@data-test='checkout']"))
-        )
-        time.sleep(3)
-        proceed_to_checkout_button.click()
-
-        first_name_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='first-name']"))
-        )
-        time.sleep(3)
-        first_name_field.send_keys('John')
-
-        last_name_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='last-name']"))
-        )
-        time.sleep(3)
-        last_name_field.send_keys('Doe')
-
-        postal_code_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='postal-code']"))
-        )
-        time.sleep(3)
-        postal_code_field.send_keys('12345')
-
-        continue_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@data-test='continue']"))
-        )
-        time.sleep(3)
-        continue_button.click()
-
-        # Click 'Finish' button on the checkout overview page
-        finish_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@data-test='finish']"))
-        )
-        time.sleep(3)
-        finish_button.click()
-
-        # Verify redirection to Order Confirmation Page with URL '/checkout-complete.html'
-        WebDriverWait(driver, 10).until(
-            EC.url_contains('/checkout-complete.html')
-        )
+        # Step 3: Click the login button
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='login-button']"))).click()
         time.sleep(3)
 
-        # Verify presence of confirmation message
-        confirmation_message = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//h2[@data-test='complete-header' and text()='Thank you for your order!']"))
-        )
+        # Step 4: Verify User is redirected to the product listing page
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Products')]")))
+
+        # Step 5: Add 'Sauce Labs Backpack' to the cart
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='add-to-cart-sauce-labs-backpack']"))).click()
         time.sleep(3)
-        assert compare_sentences(confirmation_message.text, 'Thank you for your order!')
 
-        sys.exit(0)
+        # Step 6: Navigate to the shopping cart
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[@class='shopping_cart_link']"))).click()
+        time.sleep(3)
 
+        # Step 7: Click the Checkout button
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='checkout']"))).click()
+        time.sleep(3)
+
+        # Step 8: Fill in user info and continue
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='first-name']"))).send_keys('John')
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='last-name']"))).send_keys('Doe')
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@id='postal-code']"))).send_keys('12345')
+        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='continue']"))).click()
+        time.sleep(3)
+
+        # Step 9: Click the Finish button
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='finish']"))).click()
+        time.sleep(3)
+
+        # Step 10: Verify order confirmation
+        confirmation_message = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, ".//h2[text()='Thank you for your order!']")))
+        if compare_sentences(confirmation_message.text, 'Thank you for your order!'):
+            print("Test Passed")
+            sys.exit(0)
+        else:
+            print("Test Failed")
+            sys.exit(1)
+        
     except Exception as e:
-        print(f"Test failed: {e}")
+        print(f"Test Failed: {e}")
         sys.exit(1)
-
     finally:
         driver.quit()
 
 if __name__ == "__main__":
-    run_test()
+    main()

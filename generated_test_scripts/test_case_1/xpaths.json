@@ -1,24 +1,24 @@
 {
     "xpaths": [
         {
-            "element_name": "username_input_field",
-            "xpath": "//*[@id='user-name']"
+            "element_name": "username_input",
+            "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "password_input_field",
-            "xpath": "//*[@id='password']"
+            "element_name": "password_input",
+            "xpath": "//input[@id='password']"
         },
         {
             "element_name": "login_button",
-            "xpath": "//*[@data-test='login-button']"
+            "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "product_listing_page_url",
-            "xpath": "/inventory.html"
+            "element_name": "add_to_cart_sauce_labs_backpack",
+            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "products_in_listing",
-            "xpath": "//*[@class='inventory_item']"
+            "element_name": "cart_badge",
+            "xpath": "//div[@id='shopping_cart_container']//span[@class='shopping_cart_badge']"
         }
     ]
 }

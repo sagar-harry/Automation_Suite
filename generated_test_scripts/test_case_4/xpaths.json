@@ -2,31 +2,43 @@
     "xpaths": [
         {
             "element_name": "username_input",
-            "xpath": "//input[@id='user-name']"
+            "xpath": "//input[@data-test='username']"
         },
         {
             "element_name": "password_input",
-            "xpath": "//input[@id='password']"
+            "xpath": "//input[@data-test='password']"
         },
         {
             "element_name": "login_button",
             "xpath": "//input[@data-test='login-button']"
         },
         {
-            "element_name": "add_to_cart_button",
+            "element_name": "product_card_sauce_labs_backpack",
+            "xpath": "//div[@class='inventory_item'][descendant::div[@class='inventory_item_name' and text()='Sauce Labs Backpack']]"
+        },
+        {
+            "element_name": "add_to_cart_button_sauce_labs_backpack",
             "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "cart_icon",
-            "xpath": "//a[@class='shopping_cart_link']"
+            "element_name": "shopping_cart_icon",
+            "xpath": "//a[@data-test='shopping-cart-link']"
         },
         {
-            "element_name": "cart_item",
-            "xpath": "//div[@class='cart_item']"
+            "element_name": "checkout_button",
+            "xpath": "//button[@data-test='checkout']"
         },
         {
-            "element_name": "remove_button",
-            "xpath": "//button[@data-test='remove-sauce-labs-backpack']"
+            "element_name": "first_name_input",
+            "xpath": "//input[@data-test='firstName']"
+        },
+        {
+            "element_name": "last_name_input",
+            "xpath": "//input[@data-test='lastName']"
+        },
+        {
+            "element_name": "postal_code_input",
+            "xpath": "//input[@data-test='postalCode']"
         }
     ]
 }
