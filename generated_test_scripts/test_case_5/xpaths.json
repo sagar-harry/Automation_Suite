@@ -1,0 +1,48 @@
+{
+    "xpaths": [
+        {
+            "element_name": "Username Input Field",
+            "xpath": "//input[@id='user-name']"
+        },
+        {
+            "element_name": "Password Input Field",
+            "xpath": "//input[@id='password']"
+        },
+        {
+            "element_name": "Login Button",
+            "xpath": "//input[@data-test='login-button']"
+        },
+        {
+            "element_name": "Add to Cart Button for Sauce Labs Backpack",
+            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+        },
+        {
+            "element_name": "Proceed to Checkout Button",
+            "xpath": "//button[@data-test='checkout']"
+        },
+        {
+            "element_name": "First Name Input Field",
+            "xpath": "//input[@id='first-name']"
+        },
+        {
+            "element_name": "Last Name Input Field",
+            "xpath": "//input[@id='last-name']"
+        },
+        {
+            "element_name": "Postal Code Input Field",
+            "xpath": "//input[@id='postal-code']"
+        },
+        {
+            "element_name": "Continue Button on Form",
+            "xpath": "//input[@data-test='continue']"
+        },
+        {
+            "element_name": "Finish Button on Overview Page",
+            "xpath": "//button[@data-test='finish']"
+        },
+        {
+            "element_name": "Confirmation Message",
+            "xpath": "//h2[@data-test='complete-header' and text()='Thank you for your order!']"
+        }
+    ]
+}

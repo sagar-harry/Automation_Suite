@@ -1,0 +1,24 @@
+{
+    "xpaths": [
+        {
+            "element_name": "username_input_field",
+            "xpath": "//*[@id='user-name']"
+        },
+        {
+            "element_name": "password_input_field",
+            "xpath": "//*[@id='password']"
+        },
+        {
+            "element_name": "login_button",
+            "xpath": "//*[@data-test='login-button']"
+        },
+        {
+            "element_name": "product_listing_page_url",
+            "xpath": "/inventory.html"
+        },
+        {
+            "element_name": "products_in_listing",
+            "xpath": "//*[@class='inventory_item']"
+        }
+    ]
+}

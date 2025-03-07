@@ -1,0 +1,24 @@
+{
+    "xpaths": [
+        {
+            "element_name": "username_input_field",
+            "xpath": "//input[@id='user-name']"
+        },
+        {
+            "element_name": "password_input_field",
+            "xpath": "//input[@id='password']"
+        },
+        {
+            "element_name": "login_button",
+            "xpath": "//input[@data-test='login-button']"
+        },
+        {
+            "element_name": "cart_icon",
+            "xpath": "//a[@data-test='shopping-cart-link']"
+        },
+        {
+            "element_name": "checkout_button",
+            "xpath": "//button[@data-test='checkout']"
+        }
+    ]
+}
