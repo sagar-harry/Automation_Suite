@@ -1,6 +1,6 @@
 
-import time
 import sys
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -8,62 +8,82 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from compare_sentences import compare_sentences
 
-# Setup Chrome options
-chrome_options = Options()
-chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--disable-notifications")
+def test_successful_login():
+    # Setting up Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-notifications")
 
-# Initialize WebDriver
-driver = webdriver.Chrome(options=chrome_options)
+    # Initialize the WebDriver
+    driver = webdriver.Chrome(options=chrome_options)
 
-try:
-    # Step 1: Open the Login Page
-    driver.get("https://www.saucedemo.com")
-    driver.maximize_window()
-    time.sleep(3)
+    try:
+        # Maximize the browser
+        driver.maximize_window()
 
-    # Define explicit wait
-    wait = WebDriverWait(driver, 10)
+        # Navigate to the login page
+        driver.get("https://saucedemo.com/")
 
-    # Step 2: Enter the username
-    username_input = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']")))
-    username_input.send_keys("standard_user")
-    time.sleep(3)
-    
-    # Step 3: Enter the password
-    password_input = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@id='password']")))
-    password_input.send_keys("secret_sauce")
-    time.sleep(3)
+        # Wait for 3 seconds before every action
+        time.sleep(3)
 
-    # Step 4: Click the login button
-    login_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='login-button']")))
-    login_button.click()
-    time.sleep(3)
+        # Locate the username field and enter username
+        username_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@data-test='username']"))
+        )
+        username_field.send_keys("standard_user")
 
-    # Step 5: Assert the redirection to the Product Listing Page
-    wait.until(EC.url_contains("/inventory.html"))
-    current_url = driver.current_url
-    expected_url = "https://www.saucedemo.com/inventory.html"
-    if current_url.endswith("/inventory.html"):
-        assert compare_sentences(expected_url, current_url), f"Expected: {expected_url}, Found: {current_url}"
-    else:
-        raise AssertionError("Didn't redirect to the expected URL")
+        time.sleep(3)
 
-    # Step 6: Verify that the Product Title is displayed
-    product_title = wait.until(EC.visibility_of_element_located((By.XPATH, "//span[@data-test='title'][contains(text(),'Products')]")))
-    assert compare_sentences(product_title.text, "Products"), f"Expected title: Products, Found: {product_title.text}"
+        # Locate the password field and enter password
+        password_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@data-test='password']"))
+        )
+        password_field.send_keys("secret_sauce")
 
-    # Step 7: Check for the list of products
-    product_list = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@data-test='inventory-list']")))
-    assert product_list.is_displayed(), "Product list is not visible"
+        time.sleep(3)
 
-    print("Test Passed")
-    sys.exit(0)
+        # Locate the login button and click it
+        login_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@data-test='login-button']"))
+        )
+        login_button.click()
 
-except Exception as e:
-    print(f"Test Failed: {e}")
-    sys.exit(1)
+        time.sleep(3)
 
-finally:
-    # Close the browser
-    driver.quit()
+        # Verify redirection to the products page
+        WebDriverWait(driver, 10).until(
+            EC.url_to_be("https://saucedemo.com/inventory.html")
+        )
+
+        # Locate the page title and verify
+        page_title = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@data-test='title']"))
+        )
+        assert compare_sentences(page_title.text, "Products"), "Title does not match"
+
+        # Verify the presence of Shopping Cart icon
+        shopping_cart_icon = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//a[@data-test='shopping-cart-link']"))
+        )
+        assert shopping_cart_icon is not None, "Shopping Cart Icon not found"
+
+        # Verify the presence of Menu button
+        menu_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='react-burger-menu-btn']"))
+        )
+        assert menu_button is not None, "Menu Button not found"
+
+        print("Test passed")
+        sys.exit(0)
+
+    except Exception as e:
+        print(f"Test failed: {e}")
+        sys.exit(1)
+
+    finally:
+        # Close the driver
+        driver.quit()
+
+if __name__ == "__main__":
+    test_successful_login()
