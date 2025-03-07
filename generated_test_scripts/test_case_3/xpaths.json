@@ -1,12 +1,72 @@
 {
     "xpaths": [
         {
-            "element_name": "shopping_cart_badge",
-            "xpath": "//div[@class='shopping_cart_container']//span[@data-test='shopping-cart-badge']"
+            "element_name": "Username Field",
+            "xpath": "//input[@data-test='username']"
         },
         {
-            "element_name": "remove_button_sauce_labs_backpack",
-            "xpath": "//button[@data-test='remove-sauce-labs-backpack']"
+            "element_name": "Password Field",
+            "xpath": "//input[@data-test='password']"
+        },
+        {
+            "element_name": "Login Button",
+            "xpath": "//input[@data-test='login-button']"
+        },
+        {
+            "element_name": "Product Listing Page",
+            "xpath": "//span[@data-test='title' and text()='Products']"
+        },
+        {
+            "element_name": "Add to Cart Button for Sauce Labs Backpack",
+            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+        },
+        {
+            "element_name": "Cart Icon",
+            "xpath": "//a[@data-test='shopping-cart-link']"
+        },
+        {
+            "element_name": "Shopping Cart Page",
+            "xpath": "//span[@data-test='title' and text()='Your Cart']"
+        },
+        {
+            "element_name": "Checkout Button",
+            "xpath": "//button[@data-test='checkout']"
+        },
+        {
+            "element_name": "Checkout Step 1: User Info Page",
+            "xpath": "//span[@data-test='title' and text()='Checkout: Your Information']"
+        },
+        {
+            "element_name": "First Name Field",
+            "xpath": "//input[@data-test='firstName']"
+        },
+        {
+            "element_name": "Last Name Field",
+            "xpath": "//input[@data-test='lastName']"
+        },
+        {
+            "element_name": "Zip/Postal Code Field",
+            "xpath": "//input[@data-test='postalCode']"
+        },
+        {
+            "element_name": "Continue Button",
+            "xpath": "//input[@data-test='continue']"
+        },
+        {
+            "element_name": "Checkout Step 2: Order Overview Page",
+            "xpath": "//span[@data-test='title' and text()='Checkout: Overview']"
+        },
+        {
+            "element_name": "Finish Button",
+            "xpath": "//button[@data-test='finish']"
+        },
+        {
+            "element_name": "Order Confirmation Page",
+            "xpath": "//span[@data-test='title' and text()='Checkout: Complete!']"
+        },
+        {
+            "element_name": "Thank You Message",
+            "xpath": "//h2[@data-test='complete-header' and text()='Thank you for your order!']"
         }
     ]
 }

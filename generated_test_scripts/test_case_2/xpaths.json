@@ -1,12 +1,24 @@
 {
     "xpaths": [
         {
-            "element_name": "Add to Cart Button (Sauce Labs Backpack)",
-            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Username Input",
+            "xpath": "//*[@data-test='username']"
         },
         {
-            "element_name": "Cart Badge",
-            "xpath": "//div[@id='shopping_cart_container']//span[@class='shopping_cart_badge']"
+            "element_name": "Password Input",
+            "xpath": "//*[@data-test='password']"
+        },
+        {
+            "element_name": "Login Button",
+            "xpath": "//*[@data-test='login-button']"
+        },
+        {
+            "element_name": "Add to cart Button for Sauce Labs Backpack",
+            "xpath": "//*[@data-test='add-to-cart-sauce-labs-backpack']"
+        },
+        {
+            "element_name": "Cart Count Badge",
+            "xpath": "//*[@data-test='shopping-cart-badge']"
         }
     ]
 }
