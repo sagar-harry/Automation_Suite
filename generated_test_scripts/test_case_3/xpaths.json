@@ -1,56 +1,52 @@
 {
     "xpaths": [
         {
-            "element_name": "Username Field",
-            "xpath": "//input[@data-test='username']"
+            "element_name": "Username Input Field",
+            "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "Password Field",
-            "xpath": "//input[@data-test='password']"
+            "element_name": "Password Input Field",
+            "xpath": "//input[@id='password']"
         },
         {
             "element_name": "Login Button",
-            "xpath": "//input[@data-test='login-button']"
+            "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "Add to Cart Button for Sauce Labs Backpack",
-            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Add to Cart - Sauce Labs Backpack",
+            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "Shopping Cart Icon",
+            "element_name": "Cart Icon",
             "xpath": "//a[@data-test='shopping-cart-link']"
         },
         {
-            "element_name": "Your Cart Title",
-            "xpath": "//span[@data-test='title'][text()='Your Cart']"
-        },
-        {
             "element_name": "Checkout Button",
-            "xpath": "//button[@data-test='checkout']"
+            "xpath": "//button[@id='checkout']"
         },
         {
-            "element_name": "First Name Field",
-            "xpath": "//input[@data-test='firstName']"
+            "element_name": "First Name Input Field",
+            "xpath": "//input[@id='first-name']"
         },
         {
-            "element_name": "Last Name Field",
-            "xpath": "//input[@data-test='lastName']"
+            "element_name": "Last Name Input Field",
+            "xpath": "//input[@id='last-name']"
         },
         {
-            "element_name": "Zip/Postal Code Field",
-            "xpath": "//input[@data-test='postalCode']"
+            "element_name": "Zip/Postal Code Input Field",
+            "xpath": "//input[@id='postal-code']"
         },
         {
             "element_name": "Continue Button",
-            "xpath": "//input[@data-test='continue']"
+            "xpath": "//input[@id='continue']"
         },
         {
             "element_name": "Finish Button",
-            "xpath": "//button[@data-test='finish']"
+            "xpath": "//button[@id='finish']"
         },
         {
-            "element_name": "Complete Order Message",
-            "xpath": "//h2[@data-test='complete-header']"
+            "element_name": "Order Confirmation Message",
+            "xpath": "//h2[@data-test='complete-header' and text()='Thank you for your order!']"
         }
     ]
 }

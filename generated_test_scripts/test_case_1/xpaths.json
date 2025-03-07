@@ -1,28 +1,20 @@
 {
     "xpaths": [
         {
-            "element_name": "username field",
-            "xpath": "//input[@data-test='username']"
+            "element_name": "Username Input Field",
+            "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "password field",
-            "xpath": "//input[@data-test='password']"
+            "element_name": "Password Input Field",
+            "xpath": "//input[@id='password']"
         },
         {
-            "element_name": "login button",
-            "xpath": "//input[@data-test='login-button']"
+            "element_name": "Login Button",
+            "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "page title on Products page",
-            "xpath": "//span[@data-test='title']"
-        },
-        {
-            "element_name": "shopping cart icon",
-            "xpath": "//a[@data-test='shopping-cart-link']"
-        },
-        {
-            "element_name": "menu button",
-            "xpath": "//button[@id='react-burger-menu-btn']"
+            "element_name": "Products Title",
+            "xpath": "//span[@class='title' and text()='Products']"
         }
     ]
 }

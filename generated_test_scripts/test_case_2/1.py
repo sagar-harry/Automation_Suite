@@ -2,62 +2,84 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import sys
 import time
 from compare_sentences import compare_sentences
-import sys
 
-options = Options()
-options.add_argument("--disable-notifications")
-options.add_argument("--disable-popup-blocking")
-options.add_argument("--incognito")
-options.add_argument("--start-maximized")
+def test_add_to_cart():
+    # Chrome options
+    options = Options()
+    options.add_argument("--incognito")
+    options.add_argument("--disable-notifications")
+    options.add_argument("--disable-popup-blocking")
 
-def validate_cart_count():
     driver = webdriver.Chrome(options=options)
+    driver.maximize_window()
+    
+    url = "https://saucedemo.com"
     try:
-        # Navigate to the login page
-        driver.get("https://www.saucedemo.com/")
-        time.sleep(3)
-        
-        # Wait for the username field to appear and enter the username
-        username_field = driver.find_element(By.XPATH, "//input[@data-test='username']")
-        username_field.send_keys("standard_user")
-        time.sleep(3)
-        
-        # Wait for the password field to appear and enter the password
-        password_field = driver.find_element(By.XPATH, "//input[@data-test='password']")
-        password_field.send_keys("secret_sauce")
-        time.sleep(3)
-        
-        # Wait for the login button to be clickable and click it
-        login_button = driver.find_element(By.XPATH, "//input[@data-test='login-button']")
-        login_button.click()
-        time.sleep(3)
-        
-        # Verify we are on the Product Listing page
-        current_url = driver.current_url
-        if not compare_sentences(current_url, "https://www.saucedemo.com/inventory.html"):
-            raise AssertionError("Did not navigate to the Product Listing page.")
-        
-        # Wait for the 'Add to cart' button to appear and click it
-        add_to_cart_button = driver.find_element(By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']")
-        add_to_cart_button.click()
-        time.sleep(3)
-        
-        # Verify the cart count increment in the 'Shopping Cart Badge'
-        shopping_cart_badge = driver.find_element(By.XPATH, "//a[@data-test='shopping-cart-link']/span")
-        cart_count_text = shopping_cart_badge.text
-        
-        if not compare_sentences(cart_count_text, "1"):
-            raise AssertionError(f"Cart count is incorrect, expected '1' but got '{cart_count_text}'.")
+        # 1. Navigate to the login page
+        driver.get(url)
+        time.sleep(3)  # Wait for 3 seconds
 
+        # 2. Enter the username
+        username_input = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']"))
+        )
+        username_input.send_keys("standard_user")
+        time.sleep(3)  # Wait for 3 seconds
+
+        # 3. Enter the password
+        password_input = driver.find_element(By.XPATH, "//input[@id='password']")
+        password_input.send_keys("secret_sauce")
+        time.sleep(3)  # Wait for 3 seconds
+        
+        # 4. Click on the login button
+        login_button = driver.find_element(By.XPATH, "//input[@id='login-button']")
+        login_button.click()
+        time.sleep(3)  # Wait for 3 seconds
+        
+        # 5. Ensure that we are on the product listing page
+        current_title = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='title']"))
+        )
+        if not compare_sentences(current_title.text, "Products"):
+            raise Exception("Failed to verify product listing page.")
+        
+        # 6. Click "Add to cart" button for "Sauce Labs Backpack"
+        add_to_cart_button = driver.find_element(By.XPATH, "//button[@id='add-to-cart-sauce-labs-backpack']")
+        add_to_cart_button.click()
+        time.sleep(3)  # Wait for 3 seconds
+
+        # 7. Verify the cart badge displays "1"
+        cart_badge = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@id='shopping_cart_container']//span[@class='shopping_cart_badge']"))
+        )
+        if not compare_sentences(cart_badge.text, "1"):
+            raise Exception("Cart count is not as expected.")
+        
+        # 8. Click on the cart icon
+        cart_icon = driver.find_element(By.XPATH, "//a[@class='shopping_cart_link']")
+        cart_icon.click()
+        time.sleep(3)  # Wait for 3 seconds
+        
+        # 9. Verify the shopping cart page title
+        cart_page_title = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='title' and text()='Your Cart']"))
+        )
+        if not compare_sentences(cart_page_title.text, "Your Cart"):
+            raise Exception("Shopping cart page title does not match.")
+
+        print("Test Passed")
         sys.exit(0)
 
     except Exception as e:
-        print(f"Test failed: {str(e)}")
+        print(f"Test Failed: {e}")
         sys.exit(1)
+
     finally:
         driver.quit()
 
-if __name__ == "__main__":
-    validate_cart_count()
+test_add_to_cart()

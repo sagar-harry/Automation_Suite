@@ -1,24 +1,32 @@
 {
     "xpaths": [
         {
-            "element_name": "username_field",
-            "xpath": "//input[@data-test='username']"
+            "element_name": "Username Input Field",
+            "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "password_field",
-            "xpath": "//input[@data-test='password']"
+            "element_name": "Password Input Field",
+            "xpath": "//input[@id='password']"
         },
         {
-            "element_name": "login_button",
-            "xpath": "//input[@data-test='login-button']"
+            "element_name": "Login Button",
+            "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "add_to_cart_button",
-            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Add to Cart Button for Sauce Labs Backpack",
+            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "shopping_cart_badge",
-            "xpath": "//a[@data-test='shopping-cart-link']/span"
+            "element_name": "Cart Badge",
+            "xpath": "//div[@id='shopping_cart_container']//span[@class='shopping_cart_badge']"
+        },
+        {
+            "element_name": "Cart Icon Link",
+            "xpath": "//a[@class='shopping_cart_link']"
+        },
+        {
+            "element_name": "Shopping Cart Page Title",
+            "xpath": "//span[@class='title' and text()='Your Cart']"
         }
     ]
 }
