@@ -1,56 +1,60 @@
 {
     "xpaths": [
         {
-            "element_name": "Username Input",
-            "xpath": "//input[@data-test='username']"
+            "element_name": "SauceDemo Login Page - Username Input",
+            "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "Password Input",
-            "xpath": "//input[@data-test='password']"
+            "element_name": "SauceDemo Login Page - Password Input",
+            "xpath": "//input[@id='password']"
         },
         {
-            "element_name": "Login Button",
-            "xpath": "//input[@data-test='login-button']"
+            "element_name": "SauceDemo Login Page - Login Button",
+            "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "Add to Cart Button (Inventory)",
-            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Product Listing Page - Add to Cart Sauce Labs Backpack",
+            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "Cart Icon",
-            "xpath": "//a[@data-test='shopping-cart-link']"
+            "element_name": "Shopping Cart Page - Cart Icon",
+            "xpath": "//*[@id='shopping_cart_container']/a"
         },
         {
-            "element_name": "Your Cart Title",
-            "xpath": "//span[@data-test='title' and text()='Your Cart']"
+            "element_name": "Shopping Cart Page - Checkout Button",
+            "xpath": "//button[@id='checkout']"
         },
         {
-            "element_name": "Checkout Button",
-            "xpath": "//button[@data-test='checkout']"
+            "element_name": "Checkout Step 1 Page - First Name Input",
+            "xpath": "//input[@id='first-name']"
         },
         {
-            "element_name": "First Name Input",
-            "xpath": "//input[@data-test='firstName']"
+            "element_name": "Checkout Step 1 Page - Last Name Input",
+            "xpath": "//input[@id='last-name']"
         },
         {
-            "element_name": "Last Name Input",
-            "xpath": "//input[@data-test='lastName']"
+            "element_name": "Checkout Step 1 Page - Zip/Postal Code Input",
+            "xpath": "//input[@id='postal-code']"
         },
         {
-            "element_name": "Postal Code Input",
-            "xpath": "//input[@data-test='postalCode']"
+            "element_name": "Checkout Step 1 Page - Continue Button",
+            "xpath": "//input[@id='continue']"
         },
         {
-            "element_name": "Continue Button",
-            "xpath": "//input[@data-test='continue']"
+            "element_name": "Checkout Step 2 Page - Sauce Labs Backpack Item Name",
+            "xpath": "//div[@data-test='inventory-item-name' and text()='Sauce Labs Backpack']"
         },
         {
-            "element_name": "Finish Button",
-            "xpath": "//button[@data-test='finish']"
+            "element_name": "Checkout Step 2 Page - Sauce Labs Backpack Price",
+            "xpath": "//div[@data-test='inventory-item-price' and text()='$29.99']"
         },
         {
-            "element_name": "Order Confirmation Message",
-            "xpath": "//h2[@data-test='complete-header' and text()='Thank you for your order!']"
+            "element_name": "Checkout Step 2 Page - Finish Button",
+            "xpath": "//button[@id='finish']"
+        },
+        {
+            "element_name": "Order Confirmation Page - Thank You Message",
+            "xpath": "//h2[@class='complete-header' and text()='Thank you for your order!']"
         }
     ]
 }
