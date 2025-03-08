@@ -1,24 +1,28 @@
 {
     "xpaths": [
         {
-            "element_name": "username_input",
-            "xpath": "//input[@id='user-name']"
+            "element_name": "Login Page - Username Field",
+            "xpath": "//input[@data-test='username']"
         },
         {
-            "element_name": "password_input",
-            "xpath": "//input[@id='password']"
+            "element_name": "Login Page - Password Field",
+            "xpath": "//input[@data-test='password']"
         },
         {
-            "element_name": "login_button",
-            "xpath": "//input[@id='login-button']"
+            "element_name": "Login Page - Login Button",
+            "xpath": "//input[@data-test='login-button']"
         },
         {
-            "element_name": "add_to_cart_button_sauce_labs_backpack",
-            "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
+            "element_name": "Product Listing Page - Add To Cart Button for Sauce Labs Backpack",
+            "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "cart_icon",
-            "xpath": "//div[@id='shopping_cart_container']//a[@class='shopping_cart_link']"
+            "element_name": "Product Listing Page - Shopping Cart Icon",
+            "xpath": "//a[@data-test='shopping-cart-link']"
+        },
+        {
+            "element_name": "Cart Page - Cart Badge",
+            "xpath": "//span[@data-test='shopping-cart-badge']"
         }
     ]
 }

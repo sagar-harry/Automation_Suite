@@ -1,109 +1,112 @@
 
-import time
-import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
+from time import sleep
+import sys
 from compare_sentences import compare_sentences
 
-def main():
-    options = Options()
-    options.add_argument("--disable-notifications")
-    options.add_argument("--incognito")
-    options.add_argument("--start-maximized")
+try:
+    # Setup Chrome options to disable notifications and pop-ups, and run in incognito mode
+    chrome_options = Options()
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-popup-blocking")
+    chrome_options.add_argument("--incognito")
 
-    driver = webdriver.Chrome(options=options)
+    # Initialize the WebDriver
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    # Maximize the browser window and visit the base URL
+    driver.maximize_window()
+    driver.get("https://saucedemo.com/")
 
-    try:
-        driver.get("https://www.saucedemo.com/")
-        time.sleep(3)
+    # Wait for 3 seconds before each action
+    sleep(3)
 
-        # Login Page
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//input[@data-test='username']"))
-        )
-        driver.find_element(By.XPATH, "//input[@data-test='username']").send_keys("standard_user")
-        time.sleep(3)
+    # Login to SauceDemo
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//input[@data-test='username']"))
+    ).send_keys("standard_user")
+    sleep(3)
 
-        driver.find_element(By.XPATH, "//input[@data-test='password']").send_keys("secret_sauce")
-        time.sleep(3)
+    driver.find_element(By.XPATH, "//input[@data-test='password']").send_keys("secret_sauce")
+    sleep(3)
+    
+    driver.find_element(By.XPATH, "//input[@data-test='login-button']").click()
 
-        driver.find_element(By.XPATH, "//input[@data-test='login-button']").click()
-        time.sleep(3)
+    # Verify redirection to the product listing page
+    sleep(3)
+    if "/inventory.html" not in driver.current_url:
+        raise AssertionError("Not redirected to /inventory.html")
 
-        # Product Listing Page
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/inventory.html")
-        )
+    # Add a product to cart and proceed to cart
+    driver.find_element(By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']").click()
+    sleep(3)
+    
+    driver.find_element(By.XPATH, "//a[@data-test='shopping-cart-link']").click()
+    sleep(3)
 
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']"))
-        )
-        driver.find_element(By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']").click()
-        time.sleep(3)
+    # Verify "Your Cart" title presence
+    cart_title = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//span[@data-test='title' and text()='Your Cart']"))
+    ).text
+    if not compare_sentences(cart_title, "Your Cart"):
+        raise AssertionError("Title 'Your Cart' not found on Cart page")
 
-        driver.find_element(By.XPATH, "//a[@data-test='shopping-cart-link']").click()
-        time.sleep(3)
+    # Proceed to checkout
+    driver.find_element(By.XPATH, "//button[@data-test='checkout']").click()
+    sleep(3)
 
-        # Shopping Cart Page
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/cart.html")
-        )
-        
-        driver.find_element(By.XPATH, "//button[@data-test='checkout']").click()
-        time.sleep(3)
+    # Verify redirection to checkout step-1 page
+    if "/checkout-step-one.html" not in driver.current_url:
+        raise AssertionError("Not redirected to /checkout-step-one.html")
 
-        # Checkout Step 1 Page
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/checkout-step-one.html")
-        )
+    # Fill in user details and proceed to checkout step-2
+    driver.find_element(By.XPATH, "//input[@data-test='firstName']").send_keys("Test")
+    sleep(3)
+    driver.find_element(By.XPATH, "//input[@data-test='lastName']").send_keys("User")
+    sleep(3)
+    driver.find_element(By.XPATH, "//input[@data-test='postalCode']").send_keys("12345")
+    sleep(3)
 
-        driver.find_element(By.XPATH, "//input[@data-test='firstName']").send_keys("John")
-        time.sleep(3)
-        driver.find_element(By.XPATH, "//input[@data-test='lastName']").send_keys("Doe")
-        time.sleep(3)
-        driver.find_element(By.XPATH, "//input[@data-test='postalCode']").send_keys("12345")
-        time.sleep(3)
+    driver.find_element(By.XPATH, "//input[@data-test='continue']").click()
+    sleep(3)
 
-        driver.find_element(By.XPATH, "//input[@data-test='continue']").click()
-        time.sleep(3)
+    # Verify redirection to checkout step-2 page
+    if "/checkout-step-two.html" not in driver.current_url:
+        raise AssertionError("Not redirected to /checkout-step-two.html")
 
-        # Checkout Step 2 Page
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/checkout-step-two.html")
-        )
+    # Check order summary and finish the order
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'cart_list')]"))
+    )
+    finish_button_present = driver.find_element(By.XPATH, "//button[@data-test='finish']").is_displayed()
+    if not finish_button_present:
+        raise AssertionError("'Finish' button not present on checkout-step-two.html page")
 
-        item_total = driver.find_element(By.XPATH, "//div[@data-test='subtotal-label']").text
-        tax_amount = driver.find_element(By.XPATH, "//div[@data-test='tax-label']").text
-        total_amount = driver.find_element(By.XPATH, "//div[@data-test='total-label']").text
-        time.sleep(3)
+    driver.find_element(By.XPATH, "//button[@data-test='finish']").click()
+    sleep(3)
 
-        finish_button = driver.find_element(By.XPATH, "//button[@data-test='finish']")
-        assert finish_button.is_displayed(), "Finish button is not displayed"
-        time.sleep(3)
+    # Verify redirection to the order confirmation page
+    if "/checkout-complete.html" not in driver.current_url:
+        raise AssertionError("Not redirected to /checkout-complete.html")
 
-        finish_button.click()
-        time.sleep(3)
+    # Verify order complete message
+    order_confirmation_message = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//h2[@data-test='complete-header' and text()='Thank you for your order!']"))
+    ).text
+    if not compare_sentences(order_confirmation_message, "Thank you for your order!"):
+        raise AssertionError("Order confirmation message not found")
 
-        # Order Confirmation Page
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/checkout-complete.html")
-        )
+    print("Test Case Passed")
+    sys.exit(0)
 
-        thank_you_message = driver.find_element(By.XPATH, "//h2[@data-test='complete-header']").text
-        assert compare_sentences(thank_you_message, "Thank you for your order!")
+except Exception as e:
+    print(f"Test Case Failed: {e}")
+    sys.exit(1)
 
-        sys.exit(0)
-
-    except Exception as e:
-        print(f"Test failed: {e}")
-        sys.exit(1)
-
-    finally:
-        driver.quit()
-
-if __name__ == "__main__":
-    main()
+finally:
+    # Close the browser
+    driver.quit()

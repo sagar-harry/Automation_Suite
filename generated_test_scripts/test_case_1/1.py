@@ -1,85 +1,78 @@
 
-import sys
-from time import sleep
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import sys
+import time
 from compare_sentences import compare_sentences
 
-def test_login():
+# Function to validate the login process on SauceDemo
+def validate_successful_login():
     options = Options()
     options.add_argument("--incognito")
     options.add_argument("--disable-notifications")
-    
+    options.add_argument("--disable-popup-blocking")
+
     driver = webdriver.Chrome(options=options)
-
+    
     try:
-        # Maximize the browser window
+        # Open the SauceDemo login page
+        driver.get("https://saucedemo.com/")
         driver.maximize_window()
-        
-        # Navigate to the login page
-        driver.get("https://www.saucedemo.com/")
-        
-        # Wait for the page to load
-        sleep(3)
 
-        # Locate username input and enter username
+        # Wait for the username input and set the username
+        time.sleep(3)
         username_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@data-test='username']"))
         )
         username_input.send_keys("standard_user")
-        
-        # Wait before next action
-        sleep(3)
 
-        # Locate password input and enter password
+        # Wait for the password input and set the password
+        time.sleep(3)
         password_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='password']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@data-test='password']"))
         )
         password_input.send_keys("secret_sauce")
-        
-        # Wait before next action
-        sleep(3)
 
-        # Locate and click login button
+        # Wait for the login button and click it
+        time.sleep(3)
         login_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='login-button']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@data-test='login-button']"))
         )
         login_button.click()
-        
-        # Wait before checking redirection
-        sleep(3)
 
-        # Validate redirection to the product listing page
+        # Wait for the product listing page to load
+        time.sleep(3)
         WebDriverWait(driver, 10).until(
-            EC.url_to_be("https://www.saucedemo.com/inventory.html")
+            EC.url_to_be("https://saucedemo.com/inventory.html")
         )
-        
-        # Wait before next action
-        sleep(3)
-        
-        # Verify the page title
-        product_page_title_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='title' and text()='Products']"))
+
+        # Validate the page title
+        time.sleep(3)
+        product_page_title = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@data-test='title' and text()='Products']"))
         )
+        if not compare_sentences(product_page_title.text, "Products"):
+            sys.exit(1)
+
+        # Validate the cart icon in the header
+        time.sleep(3)
+        cart_icon = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//a[@data-test='shopping-cart-link']"))
+        )
+        if not cart_icon.is_displayed():
+            sys.exit(1)
         
-        # Using custom function to assert the page title
-        expected_title = "Products"
-        actual_title = product_page_title_element.text
-        assert compare_sentences(actual_title, expected_title), "Page title does not match"
-        
-        # Exit with code 0 indicating the test passed
         sys.exit(0)
 
     except Exception as e:
-        print(f"Test failed due to: {e}")
-        # Exit with code 1 indicating the test failed
+        print(f"An error occurred: {e}")
         sys.exit(1)
-    
+
     finally:
         driver.quit()
 
 if __name__ == "__main__":
-    test_login()
+    validate_successful_login()
