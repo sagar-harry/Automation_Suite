@@ -1,24 +1,24 @@
 {
     "xpaths": [
         {
-            "element_name": "Username Field",
+            "element_name": "username_input",
             "xpath": "//input[@id='user-name']"
         },
         {
-            "element_name": "Password Field",
+            "element_name": "password_input",
             "xpath": "//input[@id='password']"
         },
         {
-            "element_name": "Login Button",
+            "element_name": "login_button",
             "xpath": "//input[@id='login-button']"
         },
         {
-            "element_name": "Add to Cart Button for Product 1",
+            "element_name": "add_to_cart_button_sauce_labs_backpack",
             "xpath": "//button[@id='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "Cart Badge",
-            "xpath": "//*[@id='shopping_cart_container']//a[@class='shopping_cart_link']/span"
+            "element_name": "cart_icon",
+            "xpath": "//div[@id='shopping_cart_container']//a[@class='shopping_cart_link']"
         }
     ]
 }

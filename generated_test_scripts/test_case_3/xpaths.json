@@ -1,56 +1,64 @@
 {
     "xpaths": [
         {
-            "element_name": "Login Username",
-            "xpath": "//input[@id='user-name']"
+            "element_name": "login_page_username_field",
+            "xpath": "//input[@data-test='username']"
         },
         {
-            "element_name": "Login Password",
-            "xpath": "//input[@id='password']"
+            "element_name": "login_page_password_field",
+            "xpath": "//input[@data-test='password']"
         },
         {
-            "element_name": "Login Button",
-            "xpath": "//input[@id='login-button']"
+            "element_name": "login_page_login_button",
+            "xpath": "//input[@data-test='login-button']"
         },
         {
-            "element_name": "Product Page Title",
-            "xpath": "//span[@class='title' and text()='Products']"
-        },
-        {
-            "element_name": "Add to Cart - Sauce Labs Backpack",
+            "element_name": "product_listing_page_add_to_cart_button",
             "xpath": "//button[@data-test='add-to-cart-sauce-labs-backpack']"
         },
         {
-            "element_name": "Shopping Cart Link",
+            "element_name": "product_listing_page_shopping_cart_icon",
             "xpath": "//a[@data-test='shopping-cart-link']"
         },
         {
-            "element_name": "Checkout Button",
-            "xpath": "//button[@id='checkout']"
+            "element_name": "shopping_cart_page_checkout_button",
+            "xpath": "//button[@data-test='checkout']"
         },
         {
-            "element_name": "First Name Field",
+            "element_name": "checkout_step_1_page_first_name_field",
             "xpath": "//input[@data-test='firstName']"
         },
         {
-            "element_name": "Last Name Field",
+            "element_name": "checkout_step_1_page_last_name_field",
             "xpath": "//input[@data-test='lastName']"
         },
         {
-            "element_name": "Postal Code Field",
+            "element_name": "checkout_step_1_page_postal_code_field",
             "xpath": "//input[@data-test='postalCode']"
         },
         {
-            "element_name": "Continue Button at Checkout Step 1",
-            "xpath": "//input[@type='submit' and @data-test='continue']"
+            "element_name": "checkout_step_1_page_continue_button",
+            "xpath": "//input[@data-test='continue']"
         },
         {
-            "element_name": "Finish Button",
-            "xpath": "//button[@id='finish']"
+            "element_name": "checkout_step_2_page_item_total",
+            "xpath": "//div[@data-test='subtotal-label']"
         },
         {
-            "element_name": "Thank You Message",
-            "xpath": "//h2[@class='complete-header' and text()='Thank you for your order!']"
+            "element_name": "checkout_step_2_page_tax_amount",
+            "xpath": "//div[@data-test='tax-label']"
+        },
+        {
+            "element_name": "checkout_step_2_page_total_amount",
+            "xpath": "//div[@data-test='total-label']"
+        },
+        {
+            "element_name": "checkout_step_2_page_finish_button",
+            "xpath": "//button[@data-test='finish']"
+        },
+        {
+            "element_name": "order_confirmation_page_thank_you_message",
+            "xpath": "//h2[@data-test='complete-header']"
         }
     ]
 }
