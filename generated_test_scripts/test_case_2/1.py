@@ -4,75 +4,88 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
+from webdriver_manager.chrome import ChromeDriverManager
 import sys
+import time
 from compare_sentences import compare_sentences
 
-# Setup Chrome options
-chrome_options = Options()
-chrome_options.add_argument("--disable-notifications")
-chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--disable-popup-blocking")
-chrome_options.add_argument("--start-maximized")
+def test_cart_count():
+    chrome_options = Options()
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-notifications")
+    
+    # Initialize WebDriver
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+    
+    try:
+        # Maximize the page
+        driver.maximize_window()
+        
+        # Navigate to the SauceDemo login page
+        driver.get("https://saucedemo.com/")
+        
+        # Wait for 3 secs before every action
+        time.sleep(3)
 
-# Start WebDriver
-driver = webdriver.Chrome(options=chrome_options)
+        # Wait for Username Field to be present and enter username
+        username_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='user-name']"))
+        )
+        username_field.send_keys("standard_user")
 
-try:
-    # Step 1: Navigate to Login Page
-    driver.get("https://www.saucedemo.com/")
+        # Wait for 3 secs before every action
+        time.sleep(3)
 
-    time.sleep(3)
+        # Wait for Password Field to be present and enter password
+        password_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='password']"))
+        )
+        password_field.send_keys("secret_sauce")
 
-    # Step 2: Ensure the login form is present
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@data-test='username']"))
-    )
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@data-test='password']"))
-    )
+        # Wait for 3 secs before every action
+        time.sleep(3)
 
-    # Step 3 & 4: Enter username and password
-    driver.find_element(By.XPATH, "//input[@data-test='username']").send_keys("standard_user")
-    time.sleep(3)
-    driver.find_element(By.XPATH, "//input[@data-test='password']").send_keys("secret_sauce")
-    time.sleep(3)
+        # Wait for Login Button to be clickable and click it
+        login_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@id='login-button']"))
+        )
+        login_button.click()
 
-    # Step 5: Click the Login button
-    driver.find_element(By.XPATH, "//input[@data-test='login-button']").click()
+        # Wait for 3 secs before every action
+        time.sleep(3)
 
-    time.sleep(3)
+        # Verify user is redirected to the Product Listing Page
+        current_url = driver.current_url
+        if not compare_sentences(current_url, "https://www.saucedemo.com/inventory.html"):
+            print("Failed: User was not redirected to Product Listing Page")
+            sys.exit(1)
 
-    # Step 6: Verify redirection to the Product Listing Page
-    WebDriverWait(driver, 10).until(
-        EC.url_contains("/inventory.html")
-    )
-    current_url = driver.current_url
-    expected_url = "https://www.saucedemo.com/inventory.html"
-    if not compare_sentences(current_url, expected_url):
-        raise ValueError(f"URL mismatch: {current_url} != {expected_url}")
+        # Wait for Add to Cart Button for Product 1 to be clickable and click it
+        add_to_cart_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@id='add-to-cart-sauce-labs-backpack']"))
+        )
+        add_to_cart_button.click()
 
-    # Step 7: Click 'Add to Cart' for 'Sauce Labs Backpack'
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@data-test='add-to-cart-sauce-labs-backpack']"))
-    ).click()
+        # Wait for 3 secs before every action
+        time.sleep(3)
 
-    time.sleep(3)
+        # Wait for Cart Badge to appear and verify the count
+        cart_badge = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='shopping_cart_container']//a[@class='shopping_cart_link']/span"))
+        )
+        cart_count = cart_badge.text
+        if not compare_sentences(cart_count, "1"):
+            print("Failed: Cart count is not as expected")
+            sys.exit(1)
 
-    # Step 8: Check cart count update
-    cart_count_element = WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//span[@class='shopping_cart_badge']"))
-    )
-    cart_count = cart_count_element.text
-    expected_count = "1"
-    if not compare_sentences(cart_count, expected_count):
-        raise ValueError(f"Cart count mismatch: {cart_count} != {expected_count}")
+        print("Passed: Cart count is as expected")
+        sys.exit(0)
 
-    # If everything went well, exit with code 0
-    sys.exit(0)
-except Exception as e:
-    print(f"Test failed: {str(e)}")
-    sys.exit(1)
-finally:
-    # Quit the driver
-    driver.quit()
+    except Exception as e:
+        print(f"Test Failed: {e}")
+        sys.exit(1)
+
+    finally:
+        driver.quit()
+
+test_cart_count()

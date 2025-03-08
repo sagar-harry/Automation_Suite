@@ -2,19 +2,19 @@
     "xpaths": [
         {
             "element_name": "Username Field",
-            "xpath": "//input[@data-test='username']"
+            "xpath": "//*[@id='user-name']"
         },
         {
             "element_name": "Password Field",
-            "xpath": "//input[@data-test='password']"
+            "xpath": "//*[@id='password']"
         },
         {
             "element_name": "Login Button",
-            "xpath": "//input[@data-test='login-button']"
+            "xpath": "//*[@id='login-button']"
         },
         {
-            "element_name": "Products Title",
-            "xpath": "//span[@data-test='title']"
+            "element_name": "Product Listing Title",
+            "xpath": "//*[@data-test='title']"
         }
     ]
 }
