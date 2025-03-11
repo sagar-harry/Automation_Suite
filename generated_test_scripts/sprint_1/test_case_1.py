@@ -1,82 +1,99 @@
 
-import sys
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+import time
+import sys
 
-try:
-    # Configure Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--incognito")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-features=NetworkService")
+def wait_for_element(driver, by, path):
+    for _ in range(10):
+        try:
+            element = driver.find_element(by, path)
+            return element
+        except:
+            time.sleep(0.5)
+    raise Exception(f'Element not found: {path}')
 
-    driver = webdriver.Chrome(options=chrome_options)
-    driver.maximize_window()
+def main():
+    try:
+        options = Options()
+        options.add_argument("--disable-notifications")
+        options.add_argument("--incognito")
+        options.add_argument("--disable-features=NetworkService")
 
-    # Navigate to the website
-    driver.get("https://saucedemo.com/")
-    time.sleep(5)  # Initial wait after opening the page
+        driver = webdriver.Chrome(options=options)
+        driver.get("https://saucedemo.com/")
+        time.sleep(5)
+        
+        driver.maximize_window()
+        time.sleep(3)
+        
+        # Login
+        username = wait_for_element(driver, By.XPATH, '//*[@id="user-name"]')
+        username.send_keys("standard_user")
+        time.sleep(3)
 
-    # Logging in using the LoginPage class
-    username = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="user-name"]')))
-    password = driver.find_element(By.XPATH, '//*[@id="password"]')
-    login_button = driver.find_element(By.XPATH, '//*[@id="login-button"]')
+        password = wait_for_element(driver, By.XPATH, '//*[@id="password"]')
+        password.send_keys("secret_sauce")
+        time.sleep(3)
 
-    username.send_keys("standard_user")
-    time.sleep(3)  # Wait before next action
-    password.send_keys("secret_sauce")
-    time.sleep(3)  # Wait before next action
-    login_button.click()
+        login_button = wait_for_element(driver, By.XPATH, '//*[@id="login-button"]')
+        login_button.click()
+        time.sleep(3)
 
-    time.sleep(3)  # Wait after logging in
+        # Add Bike Light
+        bike_light = wait_for_element(driver, By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')
+        bike_light.click()
+        time.sleep(3)
 
-    # Add 'Bike Light' and 'Fleece Jacket' to the cart
-    bike_light = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')))
-    fleece_jacket = driver.find_element(By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]')
-    
-    bike_light.click()
-    time.sleep(3)  # Wait before next action
-    fleece_jacket.click()
-    time.sleep(3)  # Wait before next action
+        # Add Fleece Jacket
+        fleece_jacket = wait_for_element(driver, By.XPATH, '//*[@id="add-to-cart-sauce-labs-fleece-jacket"]')
+        fleece_jacket.click()
+        time.sleep(3)
 
-    # Verify cart badge displays '2'
-    cart_badge = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
-    assert cart_badge.text == '2', "Cart badge count is not 2"
+        # Check Cart Badge
+        cart_badge = wait_for_element(driver, By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        assert cart_badge.text == '2', "Cart badge does not display '2'"
+        time.sleep(3)
 
-    # Remove 'Bike Light' and 'Fleece Jacket'
-    remove_bike_light = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]')))
-    remove_fleece_jacket = driver.find_element(By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')
-    
-    remove_bike_light.click()
-    time.sleep(3)  # Wait before next action
-    remove_fleece_jacket.click()
-    time.sleep(3)  # Wait before next action
+        # Remove Bike Light
+        remove_bike_light = wait_for_element(driver, By.XPATH, '//*[@id="remove-sauce-labs-bike-light"]')
+        remove_bike_light.click()
+        time.sleep(3)
 
-    # Verify the cart count element shouldn't exist
-    WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
+        # Remove Fleece Jacket
+        remove_fleece_jacket = wait_for_element(driver, By.XPATH, '//*[@id="remove-sauce-labs-fleece-jacket"]')
+        remove_fleece_jacket.click()
+        time.sleep(3)
 
-    # Add 'Bolt T-Shirt' to the cart
-    add_bolt_tshirt = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')))
-    add_bolt_tshirt.click()
-    time.sleep(3)  # Wait before next action
+        # Check Cart Count Element Not Exist
+        try:
+            driver.find_element(By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+            raise Exception("Cart count element still exists")
+        except:
+            pass
+        time.sleep(3)
 
-    # Verify cart badge displays '1'
-    cart_badge = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
-    assert cart_badge.text == '1', "Cart badge count is not 1"
+        # Add Bolt T-Shirt
+        add_bolt_t_shirt = wait_for_element(driver, By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')
+        add_bolt_t_shirt.click()
+        time.sleep(3)
 
-    # Save snapshot of the page
-    driver.save_screenshot(r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\screenshot.png")
+        # Assert Cart Badge shows '1'
+        cart_badge = wait_for_element(driver, By.XPATH, '//*[@id="shopping_cart_container"]/a/span')
+        assert cart_badge.text == '1', "Cart badge does not display '1'"
+        
+        driver.save_screenshot(r'C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\final_state.png')
+        
+        sys.exit(0)
 
-    sys.exit(0)
+    except Exception as e:
+        driver.save_screenshot(r'C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\error_state.png')
+        print(str(e))
+        sys.exit(1)
 
-except Exception as e:
-    driver.save_screenshot(r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\error_screenshot.png")
-    print(f"Test failed: {e}")
-    sys.exit(1)
+    finally:
+        driver.quit()
 
-finally:
-    driver.quit()
+if __name__ == "__main__":
+    main()

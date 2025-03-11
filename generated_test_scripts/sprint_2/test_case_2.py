@@ -1,69 +1,78 @@
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
 import sys
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 class LoginPage:
     def __init__(self, driver):
         self.driver = driver
-        self.username = "//*[@id='user-name']"
-        self.password = "//*[@id='password']"
-        self.login_button = "//*[@id='login-button']"
 
-    def login(self, user, pwd):
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.username))).send_keys(user)
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.password))).send_keys(pwd)
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.login_button))).click()
+    def login(self, username, password):
+        username_input = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="user-name"]')))
+        password_input = self.driver.find_element(By.XPATH, '//*[@id="password"]')
+        login_button = self.driver.find_element(By.XPATH, '//*[@id="login-button"]')
 
-def run_test():
+        time.sleep(3)
+        username_input.send_keys(username)
+        time.sleep(3)
+        password_input.send_keys(password)
+        time.sleep(3)
+        login_button.click()
+
+
+def main():
+    options = Options()
+    options.add_argument("--incognito")
+    options.add_argument("--disable-notifications")
+    options.add_argument("--disable-popup-blocking")
+    options.add_argument("--disable-features=NetworkService")
+
+    driver = webdriver.Chrome(options=options)
     try:
-        # Setup Chrome options
-        options = Options()
-        options.add_argument("--disable-notifications")
-        options.add_argument("--incognito")
-        options.add_argument("--disable-features=NetworkService")
-        
-        driver = webdriver.Chrome(options=options)
-        
-        # Open the website
         driver.get("https://saucedemo.com/")
-        time.sleep(5)  # Wait for the page to open
+        time.sleep(5)
         driver.maximize_window()
 
-        # Initialize and use the LoginPage class
         login_page = LoginPage(driver)
         login_page.login("standard_user", "secret_sauce")
+
+        bike_light = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bike-light"]')))
+        fleece_jacket = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="add-to-cart-sauce-labs-bolt-t-shirt"]')))
+
+        time.sleep(3)
+        bike_light.click()
+        time.sleep(3)
+        fleece_jacket.click()
+
+        cart_count = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="shopping_cart_container"]/a/span')))
         time.sleep(3)
 
-        # Add 'Bike Light' to cart
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id='add-to-cart-sauce-labs-bike-light']"))).click()
-        time.sleep(3)
+        assert cart_count.text == "2", "Cart count is incorrect"
 
-        # Add 'Fleece Jacket' to cart
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id='add-to-cart-sauce-labs-bolt-t-shirt']"))).click()
-        time.sleep(3)
-
-        # Verify cart badge displays '2'
-        cart_badge_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id='shopping_cart_container']/a/span")))
-        cart_badge_count = cart_badge_element.text
-        assert cart_badge_count == '2', f"Cart count was {cart_badge_count}, but expected '2'"
-
-        # Save a screenshot
-        driver.save_screenshot(r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\screenshot.png")
+        # Save snapshot
+        driver.save_screenshot(
+            r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\screenshot.png")
 
         sys.exit(0)
 
     except Exception as e:
-        driver.save_screenshot(r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\failed_screenshot.png")
+        driver.save_screenshot(
+            r"C:\Users\Administrator\Desktop\QE_COE\automated_pipeline_2\captured_screenshots\screenshot_failed.png")
+        print(f"Test Failed: {str(e)}")
         sys.exit(1)
 
     finally:
-        if driver:
-            driver.quit()
+        driver.quit()
+
 
 if __name__ == "__main__":
-    run_test()
+    main()
