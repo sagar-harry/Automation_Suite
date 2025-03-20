@@ -1,0 +1,102 @@
+,Test Case Name,Workflow,Selectors,Additional Details,ticket_key,ticket_label
+2,Checkout Process Validation,"
+
+Given the user is logged in
+
+When they add 'Bike Light' and 'Fleece Jacket' to the cart
+
+And they proceed to checkout
+
+And they enter 'Jonnathan' as First Name, 'K' as Last Name, and '10007' as Zip Code
+
+And they click 'Continue'
+
+Then the 'Payment Information' label should be visible
+
+
+
+","
+username: //*[@id=""user-name""]
+
+password: //*[@id=""password""]
+
+login button: //*[@id=""login-button""]
+
+bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
+
+fleece jacket: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
+
+Cart icon: //*[@id=""shopping_cart_container""]/a
+
+checkout: //*[@id=""checkout""]
+
+first-name: //*[@id=""first-name""]
+
+last-name: //*[@id=""last-name""]
+
+zip-code: //*[@id=""postal-code""]
+
+continue: //*[@id=""continue""]
+
+Payment information card: //*[@id=""checkout_summary_container""]/div/div[2]/div[1]
+
+
+","
+Verifies that payment information section is displayed after entering checkout details
+
+Use login method in LoginPage class to login to the ui   
+
+Website url: https://saucedemo.com/
+
+Username: standard_user
+
+Password: secret_sauce",EBID-2,page-1
+3,Validate Reset Functionality,"
+Given the user is logged in
+
+When they add 'Bike Light' and 'Fleece Jacket' to the cart
+
+Then the cart badge should display '2'
+
+Remove bike light
+
+Remove fleece jacket
+
+Then the cart count element shouldn't exist
+
+Then add 'Bolt T-Shirt' to the cart
+
+Then the cart badge should display '1'
+
+
+
+","
+username: //*[@id=""user-name""]
+
+password: //*[@id=""password""]
+
+login button: //*[@id=""login-button""]
+
+bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
+
+fleece jacket: //*[@id=""add-to-cart-sauce-labs-fleece-jacket""]
+
+Cart count: //*[@id=""shopping_cart_container""]/a/span
+
+Remove Bike light: //*[@id=""remove-sauce-labs-bike-light""]
+
+Remove fleece jacket: //*[@id=""remove-sauce-labs-fleece-jacket""]
+
+Add Bolt T-Shirt: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
+
+","
+
+Verifies reset functionality
+
+Use login method in LoginPage class to login to the ui   
+
+Website url: https://saucedemo.com/ 
+
+Username: standard_user
+
+Password: secret_sauce",EBID-1,page-1
