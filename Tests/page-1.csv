@@ -7,7 +7,7 @@ When they add 'Bike Light' and 'Fleece Jacket' to the cart
 
 And they proceed to checkout
 
-And they enter 'Jonnathan' as FirstName, 'K' as Last Name, and '10007' as Zip Code
+And they enter 'Jonnathan' as First Name, 'K' as Last Name, and '10007' as Zip Code
 
 And they click 'Continue'
 
