@@ -1,0 +1,30 @@
+Test Case Name,Selectors,Workflow,Additional Details
+E2E Checkout Flow,"username: //*[@id=""user""]
+password: //*[@id=""password""]
+login button: //*[@id=""login-button""]
+bike light: //*[@id=""add-to-cart-sauce-labs-bike-light""]
+fleece jacket: //*[@id=""add-to-cart-sauce-labs-bolt-t-shirt""]
+Cart icon: //*[@id=""123""]/a
+checkout: //*[@id=""checkout""]
+first-name: //*[@id=""first-name""]
+last-name: //*[@id=""last-name""]
+postal-code: //*[@id=""postal-code""]
+continue: //*[@id=""continue""]
+finish: //*[@id=""finish""]
+back-to-products: //*[@id=""back-to-products""]
+logout Side bar: //*[@id=""react-burger-menu-btn""]
+logout button: //*[@id=""logout_sidebar_link""]","Given the user is on the login page
+When they enter valid credentials and log in
+And they add 'Bike Light' and 'Fleece Jacket' to the cart
+And they click on the cart icon
+And they proceed to checkout
+And they enter 'Jonnathan' as First Name, 'K' as Last Name, and '10007' as Zip Code
+And they click 'Continue' and complete the purchase
+Then click on finish button which should be able to return to the homepage
+Click on logout sidebar and click on logout button
+And they should be able to log out
+","Validates the complete purchase flow
+Use login method in LoginPage class to login to the ui and logout
+Website url: https://saucedemo.com/
+Username: standard
+Password: secret_sauce"
