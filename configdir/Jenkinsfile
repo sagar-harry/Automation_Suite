@@ -70,6 +70,22 @@ pipeline {
                 }
             }
         }
+        stage("Stage-6: Create bug stories") {
+            steps {
+                script {
+                    def venv_path = "C:/Users/Administrator/Desktop/QE_COE/genai_venv/Scripts"
+                    def workspace_path = "C:/Users/Administrator/Desktop/QE_COE/automated_pipeline_2"
+
+                    bat """
+                        cd ${venv_path}
+                        call activate
+                        cd ${workspace_path}
+                        python jira_create_bugs.py
+                    """
+                    echo "Completed Stage-6"
+                }
+            }
+        }
         
     }
 }
