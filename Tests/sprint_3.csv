@@ -17,7 +17,7 @@ logout button: //*[@id=""logout_sidebar_link""]","Given the user is on the login
 When they enter valid credentials and log in
 And they add 'Bike Light' and 'Fleece Jacket' to the cart
 And they click on the cart icon
-And they proceed to checkout
+And  they proceed to checkout
 And they enter 'Jonnathan' as First Name, 'K' as Last Name, and '10007' as Zip Code
 And they click 'Continue' and complete the purchase
 Then click on finish button which should be able to return to the homepage
