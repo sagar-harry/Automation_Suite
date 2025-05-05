@@ -13,16 +13,31 @@ pipeline {
         }
         stage('Stage-2: Clone repository') {
             steps {
-                bat '''
-                        rmdir /s /q destination_repo
+
+                withCredentials([
+                    gitUsernamePassword(credentialsId: 'github-credentials', gitToolName: 'Default')
+                ]) {
+                    bat '''
+                        rmdir /s /q repo
+                        git clone https://github.com/sagar-harry/Automation_Suite repo
+                        cd repo
+                        git push -d origin generated_tests
+                        git branch -d generated_tests
+                        git checkout requirements
+                        cd ..
                         git clone https://github.com/sagar-harry/Automation_Suite destination_repo
                         cd destination_repo
-                        git checkout generated_tests
+                        git checkout main
+                        git checkout -b generated_tests
+                        cd ..
+                        cd repo
                     '''
+                }
             }
+
         }
         
-       stage("Stage-3: Run test scripts") {
+        stage("Stage-3: Generate test scripts") {
             steps {
                 script {
                     def venv_path = "C:/Users/Administrator/Desktop/QE_COE/genai_venv/Scripts"
@@ -32,13 +47,14 @@ pipeline {
                         cd ${venv_path}
                         call activate
                         cd ${workspace_path}
-                        python test_scenarios.py
+                        python generate_test_scripts.py
                     """
                     echo "Completed Stage-3"
                 }
             }
         }
-        stage("Stage-4: Create xml results") {
+
+        stage("Stage-4: Move generated test scripts") {
             steps {
                 script {
                     def venv_path = "C:/Users/Administrator/Desktop/QE_COE/genai_venv/Scripts"
@@ -47,14 +63,16 @@ pipeline {
                     bat """
                         cd ${venv_path}
                         call activate
+                        
                         cd ${workspace_path}
-                        python generate_xml_result.py
+                        python move_test_scripts.py
                     """
                     echo "Completed Stage-4"
                 }
             }
         }
-        stage('Stage-5: Commit and Push') {
+
+         stage('Stage-5: Commit and Push') {
             steps {
                 withCredentials([
                     gitUsernamePassword(credentialsId: 'github-credentials', gitToolName: 'Default')
@@ -64,28 +82,13 @@ pipeline {
                     git config --global user.email "10vidyasagarkonni@gmail.com"
                     git config --global user.name "sagar-harry"
                     git add .
-                    git commit -m "Push test results"
+                    git commit -m "Push test scripts"
                     git push origin generated_tests
                     '''
                 }
             }
         }
-        stage("Stage-6: Create bug stories") {
-            steps {
-                script {
-                    def venv_path = "C:/Users/Administrator/Desktop/QE_COE/genai_venv/Scripts"
-                    def workspace_path = "C:/Users/Administrator/Desktop/QE_COE/automated_pipeline_2"
 
-                    bat """
-                        cd ${venv_path}
-                        call activate
-                        cd ${workspace_path}
-                        python jira_create_bugs.py
-                    """
-                    echo "Completed Stage-6"
-                }
-            }
-        }
         
     }
 }
