@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<testsuites>
+    <testsuite name="sprint_3" tests="1" failures="1" errors="0" skipped="0">
+        <testcase classname="test_case_1.py" name="Login func" time="27.36722">
+            <failure message="Login func">Test case failed</failure>
+        </testcase>
+    </testsuite>
+</testsuites>
