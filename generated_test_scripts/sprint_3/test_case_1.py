@@ -18,7 +18,7 @@ def test_login():
 
     try:
         driver.maximize_window()
-        driver.get("http://your-url-here.com")
+        driver.get("https://www.saucedemo.com/v1/index.html")
 
         time.sleep(5)  # Wait after opening the page
 
