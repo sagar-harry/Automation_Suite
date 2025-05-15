@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<testsuites>
-    <testsuite name="sprint_3" tests="1" failures="0" errors="0" skipped="0">
-        <testcase classname="test_case_1.py" name="Login functionality" time="27.138122">
-            <system-out>Success</system-out>
-        </testcase>
-    </testsuite>
-</testsuites>

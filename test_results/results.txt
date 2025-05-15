@@ -1,5 +1,0 @@
-C:\Users\Administrator\Desktop\QE_COE\Jenkins\workspace\Automation_pipeline_testing_phase\destination_repo\generated_test_scripts\sprint_3\test_case_1.py 
-Exit Code: 0
-Test case: Success 
- 
- 
