@@ -1,7 +1,0 @@
-Test Case Name,Selectors,Workflow,Additional Details
-Login  func,"user name: /html/body/div[3]/form/p[1]
-Password: /html/body/div[3]/form/p[2] 
-Submit button: //*[@id=""submit""] ","Enter username
-Input password
-Login","Username: testqa999@gmail.com
-Password: abcd123"
