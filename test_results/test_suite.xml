@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<testsuites>
+    <testsuite name="sprint_1" tests="2" failures="0" errors="0" skipped="0">
+        <testcase classname="test_case_1.py" name="Validate Reset Functionality" time="36.602326">
+            <system-out>Success</system-out>
+        </testcase>
+        <testcase classname="test_case_2.py" name="Checkout Process Validation" time="49.292561">
+            <system-out>Success</system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="sprint_3" tests="1" failures="1" errors="0" skipped="0">
+        <testcase classname="test_case_1.py" name="E2E Checkout Flow" time="24.96751">
+            <failure message="E2E Checkout Flow">Test case failed</failure>
+        </testcase>
+    </testsuite>
+</testsuites>
