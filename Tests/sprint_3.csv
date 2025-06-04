@@ -1,0 +1,16 @@
+Test Case Name,Workflow,Additional Details
+E2E Checkout Flow,"Given the user is on the login page
+When they enter valid credentials and log in
+And they add 'Bike Light' and 'Fleece Jacket' to the cart
+And they click on the cart icon
+And they proceed to checkout
+And they enter 'Jonnathan' as First Name, 'K' as Last Name, and '10007' as Zip Code
+And they click 'Continue' and complete the purchase
+Then click on finish button which should be able to return to the homepage
+Click on logout sidebar and click on logout button
+And they should be able to log out
+","Validates the complete purchase flow
+Use login method in LoginPage class to login to the ui and logout
+Website url: https://saucedemo.com/
+Username: standard
+Password: secret_sauce"
