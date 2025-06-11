@@ -1,0 +1,38 @@
+{
+    "sprint_1": {
+        "test_case_1": {
+            "csv_name": "sprint_1.csv",
+            "script_name": "test_case_1.py",
+            "test_case_index": "1",
+            "test_case_name": "Validate Reset Functionality",
+            "execution_time": "44.18746",
+            "status": "Success"
+        },
+        "test_case_2": {
+            "csv_name": "sprint_1.csv",
+            "script_name": "test_case_2.py",
+            "test_case_index": "2",
+            "test_case_name": "Checkout Process Validation",
+            "execution_time": "60.975126",
+            "status": "Failed"
+        },
+        "summary": {
+            "total_tests": "2",
+            "failures": "1"
+        }
+    },
+    "sprint_3": {
+        "test_case_1": {
+            "csv_name": "sprint_3.csv",
+            "script_name": "test_case_1.py",
+            "test_case_index": "1",
+            "test_case_name": "E2E Checkout Flow",
+            "execution_time": "27.716787",
+            "status": "Failed"
+        },
+        "summary": {
+            "total_tests": "1",
+            "failures": "1"
+        }
+    }
+}
